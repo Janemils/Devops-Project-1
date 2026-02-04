@@ -1,4 +1,4 @@
-# Day 02 – Dockerizing FastAPI App
+# Day 02 – Dockerizing FastAPI App.
 
 ## Overview
 
@@ -27,7 +27,7 @@ This container can run the FastAPI app and expose Prometheus metrics for monitor
 9. **Expose port 8000**: The container listens on port 8000 for incoming traffic.  
 10. **Start the app**: `uvicorn` runs the FastAPI application, listening on all network interfaces (`0.0.0.0`) at port 8000.
 
-> ✅ **Key Idea:** Multi-stage builds separate the heavy build environment from the runtime environment, reducing image size and improving security.
+> **Key Idea:** Multi-stage builds separate the heavy build environment from the runtime environment, reducing image size and improving security.
 
 ---
 
@@ -36,5 +36,60 @@ This container can run the FastAPI app and expose Prometheus metrics for monitor
 From the `Day02/` folder, run:
 
 ```bash
+# To build your Dockerfile.
 docker build -t fast-api:latest_img -f Dockerfile ../Day-01
+```
+---
+```bash
+# Verify your image.
+➜ docker images
+REPOSITORY   TAG          IMAGE ID       CREATED          SIZE
+fast-api     latest_img   c9072caee3c3   16 seconds ago   140MB
+python       3.11-slim    4b9bdfe9d486   40 hours ago     124MB
+
+# Run your image with an appropriate tag and expose the ports.
+➜  docker run --name fastapi-app -p 8000:8000 fast-api:latest_img 
+```
+<img width="981" height="248" alt="image" src="https://github.com/user-attachments/assets/1dca077d-a822-46be-9f8f-fc86ac092030" />
+
+---
+
+Now that your app is running, you can test out your endpoints to cross-verify:
+<img width="1032" height="125" alt="image" src="https://github.com/user-attachments/assets/271864de-5f8f-4c6f-bf1a-93839cd96593" />
+
+
+
+---
+
+## Push the image to the registry.
+We will be using the dockerhub registry. <https://hub.docker.com/>
+
+```bash
+# Login to your docker account.
+admin@docker-host ➜  docker login
+
+USING WEB-BASED LOGIN
+To sign in with credentials on the command line, use 'docker login -u <username>'
+
+Your one-time device confirmation code is: .........
+
+# Follow as per the rest of the steps to login.
+```
+
+```bash
+# Tag your image that you want to push to your registry and push the image.
+admin@docker-host ➜  docker tag janemils-app:fastapi-v1 janemils/janemils-app:fastapi-v1
+admin@docker-host ➜  docker push janemils/janemils-app:fastapi-v1
+```
+
+Validate, whether your image actually got pushed to the registry:
+
+<img width="897" height="682" alt="image" src="https://github.com/user-attachments/assets/992ddf67-054b-422a-a6ee-f7e2842c5f13" />
+
+
+This step is important for day-03 as we will be using the image from the registry.
+
+
+
+
 
