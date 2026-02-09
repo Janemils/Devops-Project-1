@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: janemils-app-deployment
+  labels:
+    app: janemils-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: janemils-app
+  template:
+    metadata:
+      labels:
+        app: janemils-app
+    spec:
+      containers:
+      - name: janemils-app
+        image: janemils/janemils-app:fastapi-v1
+        ports:
+        - containerPort: 8000
+        # ---- Readiness probe: ensures traffic is sent only if pod is ready ----
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 3    # wait 3s before first check, allows app startup
+          periodSeconds: 5          # check every 5s
+          timeoutSeconds: 2         # fail probe if response takes >2s
+          failureThreshold: 3       # mark pod unready after 3 consecutive failures
+        # ---- Liveness probe: ensures container is alive, restart if fails ----
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 5    # give app a bit longer to start before checking
+          periodSeconds: 5
+          timeoutSeconds: 2
+          failureThreshold: 3       # restart container after 3 failures
