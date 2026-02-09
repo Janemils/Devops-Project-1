@@ -9,7 +9,9 @@ setup_metrics(app)
 @app.get("/health")
 def health():
     """Simple health check endpoint"""
-    return {"status": "ok"}
+    # return {"status": "ok"}
+    # To test out the readiness probe in kubernetes.
+    return JSONResponse(status_code=500, content={"status": "fail"})
 
 @app.get("/hello")
 def hello():
