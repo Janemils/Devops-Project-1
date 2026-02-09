@@ -16,6 +16,7 @@ spec:
     spec:
       containers:
       - name: janemils-app
+        # ---- Image taken from the docker hub registry. ----
         image: janemils/janemils-app:fastapi-v1
         ports:
         - containerPort: 8000
