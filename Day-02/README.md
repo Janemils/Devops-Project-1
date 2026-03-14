@@ -55,7 +55,7 @@ python       3.11-slim    4b9bdfe9d486   40 hours ago     124MB
 ---
 
 Now that your app is running, you can test out your endpoints to cross-verify:
-
+![alt text](image.png)
 
 
 ---
