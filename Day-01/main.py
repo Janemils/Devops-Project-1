@@ -29,3 +29,8 @@ def recover():
 @app.get("/hello")
 def hello():
     return {"message": "Hello from DevOps app"}
+
+@app.post("/crash")
+def crash():
+    """Simulate container crash for liveness probe demo"""
+    os._exit(1)  # Immediately kill the process
