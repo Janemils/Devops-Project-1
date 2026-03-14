@@ -55,7 +55,6 @@ python       3.11-slim    4b9bdfe9d486   40 hours ago     124MB
 ---
 
 Now that your app is running, you can test out your endpoints to cross-verify:
-<img width="1032" height="125" alt="image" src="https://github.com/user-attachments/assets/271864de-5f8f-4c6f-bf1a-93839cd96593" />
 
 
 
@@ -78,7 +77,7 @@ Your one-time device confirmation code is: .........
 
 ```bash
 # Tag your image that you want to push to your registry and push the image.
-admin@docker-host ➜  docker tag janemils-app:fastapi-v1 janemils/janemils-app:fastapi-v1
+admin@docker-host ➜  docker tag fastapi-api:latest_img janemils/janemils-app:fastapi-<version-number>
 admin@docker-host ➜  docker push janemils/janemils-app:fastapi-v1
 ```
 

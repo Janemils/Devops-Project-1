@@ -17,7 +17,7 @@ spec:
       containers:
       - name: janemils-app
         # ---- Image taken from the docker hub registry. ----
-        image: janemils/janemils-app:fastapi-v1
+        image: janemils/janemils-app:fastapi-v3
         ports:
         - containerPort: 8000
         # ---- Readiness probe: ensures traffic is sent only if pod is ready ----
@@ -32,7 +32,7 @@ spec:
         # ---- Liveness probe: ensures container is alive, restart if fails ----
         livenessProbe:
           httpGet:
-            path: /health
+            path: /hello
             port: 8000
           initialDelaySeconds: 5    # give app a bit longer to start before checking
           periodSeconds: 5
