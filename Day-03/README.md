@@ -93,6 +93,16 @@ Forwarding from 127.0.0.1:8000 -> 8000
 Forwarding from [::1]:8000 -> 8000
 ```
 
+OR.. You can also create the service from the service.yaml manifest file and do the port-forward.
+```bash
+controlplane Devops-Project-1/Day-03 on  main ➜  kubectl apply -f service.yaml
+service/janemils-app-service created
+
+controlplane Devops-Project-1/Day-03 on  main ✖ kubectl port-forward svc/janemils-app-service 8000:8000
+Forwarding from 127.0.0.1:8000 -> 8000
+Forwarding from [::1]:8000 -> 8000
+```
+
 ### 3. Test the readiness probe.
 
 Now, open a new terminal and test the following things:
