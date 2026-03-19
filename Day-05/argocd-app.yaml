@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: devops-project
+  namespace: argocd
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/Janemils/Devops-Project-1.git
+    targetRevision: main
+    path: Day-03   # 👈 IMPORTANT
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

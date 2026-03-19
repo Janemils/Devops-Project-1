@@ -5,7 +5,7 @@ set -e
 echo "Installing ArgoCD..."
 
 # Delete any existing namespace.
-kubectl delete namespace argocd
+kubectl delete namespace argocd --ignore-not-found
 
 # Create namespace
 kubectl create namespace argocd || true
