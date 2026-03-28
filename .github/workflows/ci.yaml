@@ -42,3 +42,10 @@ jobs:
       run: |
         sed -i "s|image: ghcr.io/janemils/devops-project-1:.*|image: $IMAGE_NAME:${{ github.sha }}|" Day-03/deployment.yaml
 
+    # Deleting the older images. At a time, only 3 images must exist in the registry.
+    - name: Delete old images
+      uses: actions/delete-package-versions@v5
+      with:
+        package-name: devops-project-1
+        package-type: container
+        min-versions-to-keep: 3
