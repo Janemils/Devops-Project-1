@@ -50,6 +50,19 @@ jobs:
     - name: Show git diff
       run: git diff
 
+    # Commit to the repo for ArgoCD to pick up.    
+    - name: Commit and push changes
+      run: |
+        git config user.name "github-actions"
+        git config user.email "actions@github.com"
+        git add Day-03/deployment.yaml
+        if git diff --cached --quiet; then
+          echo "No changes to commit"
+        else
+          git commit -m "Update image to $IMAGE_NAME:${{ github.sha }} [skip ci]"
+          git push origin main
+        fi
+
     # Deleting the older images. At a time, only 3 images must exist in the registry.
     - name: Delete old images
       uses: actions/delete-package-versions@v5
