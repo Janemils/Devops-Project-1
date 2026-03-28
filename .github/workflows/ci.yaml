@@ -16,15 +16,15 @@ jobs:
       IMAGE_NAME: ghcr.io/janemils/devops-project-1
 
     steps:
-    # 1️⃣ Checkout code
+    # Checkout code.
     - name: Checkout
       uses: actions/checkout@v4
 
-    # 2️⃣ Login to GHCR
+    # Login to GHCR.
     - name: Login to GHCR
       run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-    # 3️⃣ Build Docker image
+    # Build Docker image.
     - name: Build image
       run: |
         docker build \
@@ -32,24 +32,13 @@ jobs:
           -f Day-02/Dockerfile \
           .
 
-    # 4️⃣ Push image
+    # Push image.
     - name: Push image
       run: |
         docker push $IMAGE_NAME:${{ github.sha }}
 
-    # 5️⃣ Setup kubectl
-    - name: Setup kubeconfig
+    # Updating the image in the manifest.    
+    - name: Update image in manifest
       run: |
-        mkdir -p $HOME/.kube
-        echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
+        sed -i "s|image: ghcr.io/janemils/devops-project-1:.*|image: $IMAGE_NAME:${{ github.sha }}|" Day-04/deployment.yaml
 
-    # 6️⃣ Deploy (update image)
-    - name: Deploy to Kubernetes
-      run: |
-        kubectl set image deployment/janemils-app-deployment \
-          janemils-app=$IMAGE_NAME:${{ github.sha }}
-
-    # 7️⃣ Verify rollout (VERY IMPORTANT)
-    - name: Verify rollout
-      run: |
-        kubectl rollout status deployment/janemils-app-deployment
