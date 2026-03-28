@@ -1,11 +1,11 @@
-name: CI Pipeline
+name: CI/CD Pipeline
 
 on:
   push:
     branches: [ main ]
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     permissions:
@@ -16,18 +16,40 @@ jobs:
       IMAGE_NAME: ghcr.io/janemils/devops-project-1
 
     steps:
+    # 1️⃣ Checkout code
     - name: Checkout
       uses: actions/checkout@v4
 
+    # 2️⃣ Login to GHCR
     - name: Login to GHCR
       run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
+    # 3️⃣ Build Docker image
     - name: Build image
       run: |
-        docker build -t $IMAGE_NAME:${{ github.sha }} \
-        -f Day-02/Dockerfile \
-        .
+        docker build \
+          -t $IMAGE_NAME:${{ github.sha }} \
+          -f Day-02/Dockerfile \
+          .
 
+    # 4️⃣ Push image
     - name: Push image
       run: |
         docker push $IMAGE_NAME:${{ github.sha }}
+
+    # 5️⃣ Setup kubectl
+    - name: Setup kubeconfig
+      run: |
+        mkdir -p $HOME/.kube
+        echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
+
+    # 6️⃣ Deploy (update image)
+    - name: Deploy to Kubernetes
+      run: |
+        kubectl set image deployment/janemils-app-deployment \
+          janemils-app=$IMAGE_NAME:${{ github.sha }}
+
+    # 7️⃣ Verify rollout (VERY IMPORTANT)
+    - name: Verify rollout
+      run: |
+        kubectl rollout status deployment/janemils-app-deployment
