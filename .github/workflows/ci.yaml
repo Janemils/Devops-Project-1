@@ -38,9 +38,17 @@ jobs:
         docker push $IMAGE_NAME:${{ github.sha }}
 
     # Updating the image in the manifest.    
-    - name: Update image in manifest
+    - name: Update manifest (robust)
       run: |
-        sed -i "s|image: ghcr.io/janemils/devops-project-1:.*|image: $IMAGE_NAME:${{ github.sha }}|" Day-03/deployment.yaml
+      sed -i '/image:/c\        image: '"$IMAGE_NAME:${{ github.sha }}" Day-03/deployment.yaml
+    # For debugging purpose.
+    - name: Show updated file
+      run: |
+      echo "===== UPDATED FILE ====="
+      cat Day-03/deployment.yaml
+
+    - name: Show git diff
+      run: git diff
 
     # Deleting the older images. At a time, only 3 images must exist in the registry.
     - name: Delete old images
