@@ -40,5 +40,5 @@ jobs:
     # Updating the image in the manifest.    
     - name: Update image in manifest
       run: |
-        sed -i "s|image: ghcr.io/janemils/devops-project-1:.*|image: $IMAGE_NAME:${{ github.sha }}|" Day-04/deployment.yaml
+        sed -i "s|image: ghcr.io/janemils/devops-project-1:.*|image: $IMAGE_NAME:${{ github.sha }}|" Day-03/deployment.yaml
 
