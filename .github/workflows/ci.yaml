@@ -44,8 +44,8 @@ jobs:
     # For debugging purpose.
     - name: Show updated file
       run: |
-      echo "===== UPDATED FILE ====="
-      cat Day-03/deployment.yaml
+        echo "===== UPDATED FILE ====="
+        cat Day-03/deployment.yaml
 
     - name: Show git diff
       run: git diff
