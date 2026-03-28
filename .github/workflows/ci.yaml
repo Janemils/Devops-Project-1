@@ -24,7 +24,9 @@ jobs:
 
     - name: Build image
       run: |
-        docker build -t $IMAGE_NAME:${{ github.sha }} .
+        docker build -t $IMAGE_NAME:${{ github.sha }} \
+        -f Day-02/Dockerfile \
+        Day-02
 
     - name: Push image
       run: |
