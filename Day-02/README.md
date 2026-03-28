@@ -33,11 +33,11 @@ This container can run the FastAPI app and expose Prometheus metrics for monitor
 
 ## Building the Docker Image
 
-From the `Day02/` folder, run:
+From the `Devops-Project-1/` folder, run:
 
 ```bash
 # To build your Dockerfile.
-docker build -t fast-api:latest_img -f Dockerfile ../Day-01
+docker build -t fast-api:latest_img -f Day-02/Dockerfile .
 ```
 ---
 ```bash
