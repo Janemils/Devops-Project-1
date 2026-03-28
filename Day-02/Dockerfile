@@ -2,7 +2,7 @@
 FROM python:3.11-slim AS builder
 WORKDIR /app
 # Copy requirements.txt from Day01
-COPY requirements.txt .
+COPY Day-01/requirements.txt .
 RUN pip install --prefix=/install -r requirements.txt
 
 # Stage 2: Runtime
@@ -10,7 +10,7 @@ FROM python:3.11-slim
 WORKDIR /app
 COPY --from=builder /install /usr/local
 # Copy all app files from Day01
-COPY . . 
+COPY Day-01/ . 
 EXPOSE 8000
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
 
