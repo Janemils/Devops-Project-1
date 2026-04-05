@@ -162,19 +162,27 @@ Password:
 
 Make a note of the username and the password obtained in the above output.
 
-In the secret.yaml manifest file, add the repo url, your github username and password.
-Now, create the secret using the secret.yaml manifest file.
+In the secrets.yaml and secrets_1.yaml manifest files, add the repo url, your github username and password.
+Now, create the secret using the manifest files.
 ```bash
+# NOTE: This step is only cause, the repo is private for now. Once the repo is public, this step can be ignored."
 controlplane Devops-Project-1/Day-05 on  main [?] ➜  kubectl apply -f secrets.yaml 
 secret/repo-devops-project created
 
-# Validate if your secret is created successfully.
+controlplane Devops-Project-1/Day-05 on  main [?] ➜  kubectl apply -f secrets_1.yaml
+secret/repo-devops-project created
+
+# Validate if both your secret is created successfully.
 controlplane Devops-Project-1/Day-05 on  main ➜  kubectl get secret -n argocd
 NAME                          TYPE     DATA   AGE
 argocd-initial-admin-secret   Opaque   1      23m
 argocd-notifications-secret   Opaque   0      23m
 argocd-secret                 Opaque   5      23m
 repo-devops-project           Opaque   3      11m
+
+controlplane ~ ➜  kubectl get secrets
+NAME                  TYPE                             DATA   AGE
+repo-devops-project   kubernetes.io/dockerconfigjson   1      7m51s
 ```
 
 Now, let's deploy the argocd application using the argocd-app.yaml manifest file.
