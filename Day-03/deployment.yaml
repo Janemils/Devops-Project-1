@@ -20,7 +20,7 @@ spec:
       containers:
       - name: janemils-app
         # ---- Image will be overwritten to the latest from the CI pipeline. ----
-        image: ghcr.io/janemils/devops-project-1:5bbf0d553aaa544eeb6739e74cd2174f23d3787a
+        image: ghcr.io/janemils/devops-project-1:60bfa8b3a2ee212511b3cf1269b2851e4aa912e1
         ports:
         - containerPort: 8000
         # ---- Readiness probe: ensures traffic is sent only if pod is ready ----
