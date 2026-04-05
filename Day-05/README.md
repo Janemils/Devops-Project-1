@@ -182,7 +182,7 @@ repo-devops-project           Opaque   3      11m
 
 controlplane ~ ➜  kubectl get secrets
 NAME                  TYPE                             DATA   AGE
-repo-devops-project   kubernetes.io/dockerconfigjson   1      7m51s
+secret-repo-deploy   kubernetes.io/dockerconfigjson   1      7m51s
 ```
 
 Now, let's deploy the argocd application using the argocd-app.yaml manifest file.
