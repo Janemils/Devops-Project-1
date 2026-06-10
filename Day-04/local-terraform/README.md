@@ -70,20 +70,27 @@ sudo apt install -y unzip
 root@ubuntu-host Devops-Project-1/Day-04/local-terraform on  main [?] via 💠 default ➜  unzip -v
 UnZip 6.00 of 20 April 2009, by Debian. Original by Info-ZIP.
 
-curl -LO https://releases.hashicorp.com/terraform/1.6.4/terraform_1.6.4_linux_amd64.zip
-ls -lh terraform_1.6.4_linux_amd64.zip
+root@ubuntu-host Devops-Project-1/Day-04/local-terraform on  main via 💠 default ➜ curl -LO https://releases.hashicorp.com/terraform/1.6.4/terraform_1.6.4_linux_amd64.zip
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 24.0M  100 24.0M    0     0  69.7M      0 --:--:-- --:--:-- --:--:-- 70.0M
 
-unzip terraform_1.6.4_linux_amd64.zip
-ls -lh terraform
+root@ubuntu-host Devops-Project-1/Day-04/local-terraform on  main [?] via 💠 default ➜  ls -lh terraform_1.6.4_linux_amd64.zip
+-rw-r--r-- 1 root root 25M Jun 10 06:43 terraform_1.6.4_linux_amd64.zip
 
-sudo mv terraform /usr/local/bin/
-root@ubuntu-host Devops-Project-1/Day-04/local-terraform on  main [?] via 💠 default ✖ terraform -v
+root@ubuntu-host Devops-Project-1/Day-04/local-terraform on  main [?] via 💠 default ➜  unzip terraform_1.6.4_linux_amd64.zip
+Archive:  terraform_1.6.4_linux_amd64.zip
+  inflating: terraform      
+
+root@ubuntu-host Devops-Project-1/Day-04/local-terraform on  main [?] via 💠 default ➜  ls -lh terraform
+-rwxr-xr-x 1 root root 79M Nov 15  2023 terraform
+
+root@ubuntu-host Devops-Project-1/Day-04/local-terraform on  main [?] via 💠 default ➜  sudo mv terraform /usr/local/bin/
+
+root@ubuntu-host Devops-Project-1/Day-04/local-terraform on  main [?] via 💠 default ➜ terraform -v
 Terraform v1.6.4
 on linux_amd64
 + provider registry.terraform.io/hashicorp/kubernetes v3.0.1
-
-Your version of Terraform is out of date! The latest version
-is 1.14.7. You can update by downloading from https://www.terraform.io/downloads.html
 
 # Cleanup:
 root@ubuntu-host Devops-Project-1/Day-04/local-terraform on  main [?] via 💠 default ➜  rm terraform_1.6.4_linux_amd64.zip
