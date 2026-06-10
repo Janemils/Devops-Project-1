@@ -1,6 +1,6 @@
-# My DevOps FastAPI App
+# Day-01: DevOps FastAPI App Project.
 
-My minimal FastAPI application demonstrating **DevOps best practices** such as containerization readiness, monitoring with Prometheus, and CI/CD preparation.
+This is a minimal FastAPI application demonstrating **DevOps best practices** such as containerization readiness, monitoring with Prometheus, and CI/CD preparation.
 
 ---
 
