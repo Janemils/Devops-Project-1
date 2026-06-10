@@ -1,16 +1,14 @@
 # Day 04 — Local Terraform Kubernetes Setup
 
-## Overview
+## Overview  
 
-This project demonstrates deploying a Dockerized FastAPI application to a **local Kubernetes cluster (Kind)** using **Terraform**.  
+Until Day 03, all Kubernetes resources were created manually using Kubernetes manifest files and applied using kubectl.
 
-Day-04 builds on the previous days (FastAPI app setup, Docker containerization, and manual Kubernetes deployment) by introducing **Infrastructure-as-Code (IaC)** to manage:
+While this approach works well for small environments, it becomes increasingly difficult to manage, reproduce, and version infrastructure as projects grow.
 
-- Namespaces  
-- Deployments  
-- Services  
+To address this challenge, Terraform was introduced to define the Kubernetes infrastructure as code (IaC). Instead of manually creating resources, the desired cluster state is declared in Terraform configuration files and applied consistently across environments.
 
-This ensures **reproducible, version-controlled infrastructure** and forms a foundation for CI/CD and production-ready automation.
+This enables version control, repeatability, and automation while reducing configuration drift.
 
 ---
 
