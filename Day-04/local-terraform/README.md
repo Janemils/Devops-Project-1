@@ -401,7 +401,18 @@ Service (janemils-app-service)
    ▼
 kubectl port-forward 8000:8000 → http://localhost:8000
 ```
+  
 
-
+  
+> [!TIP]
+> If you face this issue while running the above your terraform commands:
+> ```
+>  error from registry: You have reached your unauthenticated pull rate limit. https://www.docker.com/increase-rate-limit
+> ```
+>
+> You need to run the below command and authenticate and then run the terraform commands after successfuly authentication:
+> ```
+> docker login
+> ```
 
 
