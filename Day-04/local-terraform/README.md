@@ -97,6 +97,29 @@ root@ubuntu-host Devops-Project-1/Day-04/local-terraform on  main [?] via �
 ```
 ---
 
+***Create a kind cluster***:
+```bash
+root@ubuntu-host Devops-Project-1/Day-04/local-terraform on  main [?] via 💠 default ➜  kind create cluster --name devops-test
+Creating cluster "devops-test" ...
+ ✓ Ensuring node image (kindest/node:v1.31.2) 🖼 
+ ✓ Preparing nodes 📦  
+ ✓ Writing configuration 📜 
+ ✓ Starting control-plane 🕹️ 
+ ✓ Installing CNI 🔌 
+ ✓ Installing StorageClass 💾 
+Set kubectl context to "kind-devops-test"
+You can now use your cluster with:
+
+kubectl cluster-info --context kind-devops-test
+
+Not sure what to do next? 😅  Check out https://kind.sigs.k8s.io/docs/user/quick-start/
+
+root@ubuntu-host Devops-Project-1/Day-04/local-terraform on  main [?] via 💠 default ➜  kind cget clusters
+devops-test
+
+```
+---
+
 ## Folder Structure:
 ```
 Day-04/local-terraform
