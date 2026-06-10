@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: janemils-app-deployment
+  labels:
+    app: janemils-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: janemils-app
+  template:
+    metadata:
+      labels:
+        app: janemils-app
+    spec:
+      containers:
+      - name: janemils-app
+        image: janemils/janemils-app:fastapi-v3
+        ports:
+        - containerPort: 8000
+
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 3
+          periodSeconds: 5
+          timeoutSeconds: 2
+          failureThreshold: 3
+
+        livenessProbe:
+          httpGet:
+            path: /hello
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 2
+          failureThreshold: 3

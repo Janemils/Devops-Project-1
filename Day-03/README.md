@@ -36,7 +36,8 @@ The FastAPI app includes (Have added 3 new metrics: `/fail`. `/recover` and `/cr
 ### 1. Apply Deployment using the manifest file.
 
 ```bash
-controlplane Devops-Project-1/Day-03 on  main ➜  kubectl apply -f deployment.yaml 
+# For now, you can ignore deployment.yaml as that's required for Day-04 and Day-05.
+controlplane Devops-Project-1/Day-03 on  main ➜  kubectl apply -f deployment-from-docker.yaml 
 deployment.apps/janemils-app-deployment created
 
 controlplane Devops-Project-1/Day-03 on  main ➜  kubectl describe deploy
