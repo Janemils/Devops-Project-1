@@ -1,4 +1,4 @@
-# Day 06 — GitHub Actions CI/CD Pipeline
+# Day 06 - GitHub Actions CI/CD Pipeline
 
 > **Note**
 >
@@ -15,7 +15,21 @@
 > The implementation lives in `.github/workflows/ci.yaml`, while this README serves as the accompanying technical documentation.
 
 ---
+  
+## Repository Structure
 
+```text
+Day-06/
+└── README.md
+
+.github/
+└── workflows/
+    └── ci.yaml
+```
+- *README.md* documents the CI/CD implementation and engineering decisions.
+- *ci.yaml* contains the executable GitHub Actions workflow.
+---
+  
 # GitHub Actions CI/CD Pipeline
 
 ## Overview
