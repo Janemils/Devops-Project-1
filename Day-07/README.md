@@ -7,15 +7,13 @@ Modern DevOps practices integrate security throughout the software delivery life
 This section demonstrates how security can be incorporated into a CI/CD workflow using container image scanning, secret detection, and pipeline security gates.
 
 ---
-
-# Part 1: Container Vulnerability Scanning (Grype)
-## Objective
-
-Identify known vulnerabilities within the container image before deployment.
-
----
   
-## Why Grype?
+  
+# Part 1: Container Vulnerability Scanning (Grype)
+  
+The objective is to identify known vulnerabilities within the container image before deployment.
+  
+## - Why Grype?
 
 Container vulnerability scanning is commonly performed using tools such as Trivy, Grype, Clair, and Snyk.
 
@@ -32,7 +30,7 @@ The objective of this phase is not to compare scanners, but to understand how vu
 
 ---
 
-## Installing Grype
+## - Installing Grype:-
 
 ### Linux
 
@@ -58,7 +56,7 @@ Supported DB Schema: 6
 
 ---
 
-## Security Assessment Workflow
+## - Security Assessment Workflow
 
 The security assessment followed the process below:
 
@@ -71,7 +69,7 @@ The security assessment followed the process below:
 
 ---
 
-## Initial Scan Results (fastapi-v3)
+## - Initial Scan Results (fastapi-v3)
 
 The existing application image was scanned using Grype:
 
@@ -91,70 +89,12 @@ root@ubuntu-host ~ ➜  grype janemils/janemils-app:fastapi-v3 --only-fixed | gr
 python                   3.11.15          3.15.0b2                    binary  CVE-2026-7210        Critical    0.2% (40th)    0.2    
 libssl3t64               3.5.4-1~deb13u2  3.5.5-1~deb13u2             deb     CVE-2026-28389       High        0.1% (34th)    0.1    
 openssl                  3.5.4-1~deb13u2  3.5.5-1~deb13u2             deb     CVE-2026-28389       High        0.1% (34th)    0.1    
-openssl-provider-legacy  3.5.4-1~deb13u2  3.5.5-1~deb13u2             deb     CVE-2026-28389       High        0.1% (34th)    0.1    
-libssl3t64               3.5.4-1~deb13u2  3.5.5-1~deb13u2             deb     CVE-2026-28390       High        0.1% (34th)    0.1    
-openssl                  3.5.4-1~deb13u2  3.5.5-1~deb13u2             deb     CVE-2026-28390       High        0.1% (34th)    0.1    
-openssl-provider-legacy  3.5.4-1~deb13u2  3.5.5-1~deb13u2             deb     CVE-2026-28390       High        0.1% (34th)    0.1    
-jaraco-context           5.3.0            6.1.0                       python  GHSA-58pv-8j8x-9vj2  High        0.1% (27th)    < 0.1  
-libssl3t64               3.5.4-1~deb13u2  3.5.6-1~deb13u2             deb     CVE-2026-45447       High        < 0.1% (26th)  < 0.1  
-openssl                  3.5.4-1~deb13u2  3.5.6-1~deb13u2             deb     CVE-2026-45447       High        < 0.1% (26th)  < 0.1  
-openssl-provider-legacy  3.5.4-1~deb13u2  3.5.6-1~deb13u2             deb     CVE-2026-45447       High        < 0.1% (26th)  < 0.1  
-libssl3t64               3.5.4-1~deb13u2  3.5.6-1~deb13u2             deb     CVE-2026-9076        High        < 0.1% (26th)  < 0.1  
-openssl                  3.5.4-1~deb13u2  3.5.6-1~deb13u2             deb     CVE-2026-9076        High        < 0.1% (26th)  < 0.1  
-openssl-provider-legacy  3.5.4-1~deb13u2  3.5.6-1~deb13u2             deb     CVE-2026-9076        High        < 0.1% (26th)  < 0.1  
-libc-bin                 2.41-12+deb13u1  2.41-12+deb13u2             deb     CVE-2025-15281       High        < 0.1% (25th)  < 0.1  
-libc6                    2.41-12+deb13u1  2.41-12+deb13u2             deb     CVE-2025-15281       High        < 0.1% (25th)  < 0.1  
-libc-bin                 2.41-12+deb13u1  2.41-12+deb13u3             deb     CVE-2026-4437        High        < 0.1% (25th)  < 0.1  
-libc6                    2.41-12+deb13u1  2.41-12+deb13u3             deb     CVE-2026-4437        High        < 0.1% (25th)  < 0.1  
-python                   3.11.15          *3.13.13, 3.14.4, 3.15.0a8  binary  CVE-2026-4224        High        < 0.1% (25th)  < 0.1  
-libc-bin                 2.41-12+deb13u1  2.41-12+deb13u3             deb     CVE-2026-4046        High        < 0.1% (24th)  < 0.1  
-libc6                    2.41-12+deb13u1  2.41-12+deb13u3             deb     CVE-2026-4046        High        < 0.1% (24th)  < 0.1  
-libssl3t64               3.5.4-1~deb13u2  3.5.6-1~deb13u2             deb     CVE-2026-7383        High        < 0.1% (20th)  < 0.1  
-openssl                  3.5.4-1~deb13u2  3.5.6-1~deb13u2             deb     CVE-2026-7383        High        < 0.1% (20th)  < 0.1  
-openssl-provider-legacy  3.5.4-1~deb13u2  3.5.6-1~deb13u2             deb     CVE-2026-7383        High        < 0.1% (20th)  < 0.1  
-libssl3t64               3.5.4-1~deb13u2  3.5.6-1~deb13u2             deb     CVE-2026-34180       High        < 0.1% (18th)  < 0.1  
-openssl                  3.5.4-1~deb13u2  3.5.6-1~deb13u2             deb     CVE-2026-34180       High        < 0.1% (18th)  < 0.1  
-openssl-provider-legacy  3.5.4-1~deb13u2  3.5.6-1~deb13u2             deb     CVE-2026-34180       High        < 0.1% (18th)  < 0.1  
-libssl3t64               3.5.4-1~deb13u2  3.5.5-1~deb13u2             deb     CVE-2026-28388       High        < 0.1% (17th)  < 0.1  
-openssl                  3.5.4-1~deb13u2  3.5.5-1~deb13u2             deb     CVE-2026-28388       High        < 0.1% (17th)  < 0.1  
-openssl-provider-legacy  3.5.4-1~deb13u2  3.5.5-1~deb13u2             deb     CVE-2026-28388       High        < 0.1% (17th)  < 0.1  
-python                   3.11.15          *3.13.13, 3.14.4, 3.15.0a8  binary  CVE-2026-3644        High        < 0.1% (18th)  < 0.1  
-libssl3t64               3.5.4-1~deb13u2  3.5.5-1~deb13u2             deb     CVE-2026-28387       High        < 0.1% (15th)  < 0.1  
-openssl                  3.5.4-1~deb13u2  3.5.5-1~deb13u2             deb     CVE-2026-28387       High        < 0.1% (15th)  < 0.1  
-openssl-provider-legacy  3.5.4-1~deb13u2  3.5.5-1~deb13u2             deb     CVE-2026-28387       High        < 0.1% (15th)  < 0.1  
-libssl3t64               3.5.4-1~deb13u2  3.5.5-1~deb13u2             deb     CVE-2026-31790       High        < 0.1% (13th)  < 0.1  
-openssl                  3.5.4-1~deb13u2  3.5.5-1~deb13u2             deb     CVE-2026-31790       High        < 0.1% (13th)  < 0.1  
-openssl-provider-legacy  3.5.4-1~deb13u2  3.5.5-1~deb13u2             deb     CVE-2026-31790       High        < 0.1% (13th)  < 0.1  
-libssl3t64               3.5.4-1~deb13u2  3.5.6-1~deb13u2             deb     CVE-2026-42764       High        < 0.1% (13th)  < 0.1  
-openssl                  3.5.4-1~deb13u2  3.5.6-1~deb13u2             deb     CVE-2026-42764       High        < 0.1% (13th)  < 0.1  
-openssl-provider-legacy  3.5.4-1~deb13u2  3.5.6-1~deb13u2             deb     CVE-2026-42764       High        < 0.1% (13th)  < 0.1  
-libssl3t64               3.5.4-1~deb13u2  3.5.6-1~deb13u2             deb     CVE-2026-34183       High        < 0.1% (11th)  < 0.1  
-openssl                  3.5.4-1~deb13u2  3.5.6-1~deb13u2             deb     CVE-2026-34183       High        < 0.1% (11th)  < 0.1  
-openssl-provider-legacy  3.5.4-1~deb13u2  3.5.6-1~deb13u2             deb     CVE-2026-34183       High        < 0.1% (11th)  < 0.1  
-dpkg                     1.22.21          1.22.22                     deb     CVE-2026-2219        High        < 0.1% (7th)   < 0.1  
-libc-bin                 2.41-12+deb13u1  2.41-12+deb13u2             deb     CVE-2026-0915        High        < 0.1% (4th)   < 0.1  
-libc6                    2.41-12+deb13u1  2.41-12+deb13u2             deb     CVE-2026-0915        High        < 0.1% (4th)   < 0.1  
-libssl3t64               3.5.4-1~deb13u2  3.5.6-1~deb13u2             deb     CVE-2026-45445       High        < 0.1% (4th)   < 0.1  
-openssl                  3.5.4-1~deb13u2  3.5.6-1~deb13u2             deb     CVE-2026-45445       High        < 0.1% (4th)   < 0.1  
-openssl-provider-legacy  3.5.4-1~deb13u2  3.5.6-1~deb13u2             deb     CVE-2026-45445       High        < 0.1% (4th)   < 0.1  
-wheel                    0.45.1           0.46.2                      python  GHSA-8rrh-rw8j-w5fx  High        < 0.1% (3rd)   < 0.1  
-libcap2                  1:2.75-10+b3     1:2.75-10+deb13u1           deb     CVE-2026-4878        High        < 0.1% (2nd)   < 0.1  
-libc-bin                 2.41-12+deb13u1  2.41-12+deb13u2             deb     CVE-2026-0861        High        < 0.1% (1st)   < 0.1  
-libc6                    2.41-12+deb13u1  2.41-12+deb13u2             deb     CVE-2026-0861        High        < 0.1% (1st)   < 0.1  
-libssl3t64               3.5.4-1~deb13u2  3.5.5-1~deb13u2             deb     CVE-2026-31789       Critical    < 0.1% (0th)   < 0.1  
-openssl                  3.5.4-1~deb13u2  3.5.5-1~deb13u2             deb     CVE-2026-31789       Critical    < 0.1% (0th)   < 0.1  
-openssl-provider-legacy  3.5.4-1~deb13u2  3.5.5-1~deb13u2             deb     CVE-2026-31789       Critical    < 0.1% (0th)   < 0.1  
-libssl3t64               3.5.4-1~deb13u2  3.5.6-1~deb13u2             deb     CVE-2026-34182       Critical    < 0.1% (0th)   < 0.1  
-openssl                  3.5.4-1~deb13u2  3.5.6-1~deb13u2             deb     CVE-2026-34182       Critical    < 0.1% (0th)   < 0.1  
-openssl-provider-legacy  3.5.4-1~deb13u2  3.5.6-1~deb13u2             deb     CVE-2026-34182       Critical    < 0.1% (0th)   < 0.1  
-libssl3t64               3.5.4-1~deb13u2  3.5.6-1~deb13u2             deb     CVE-2026-34181       High        < 0.1% (0th)   < 0.1  
-openssl                  3.5.4-1~deb13u2  3.5.6-1~deb13u2             deb     CVE-2026-34181       High        < 0.1% (0th)   < 0.1  
-openssl-provider-legacy  3.5.4-1~deb13u2  3.5.6-1~deb13u2             deb     CVE-2026-34181       High        < 0.1% (0th)   < 0.1  
+............. (113 vulnerabilities.)
 
 ```
 ---
 
-### Analysis
+## - Analysis
 
 The scan results suggested that many vulnerabilities originated from components inherited from the base image rather than the application code itself.
 
@@ -164,7 +104,7 @@ After rebuilding and rescanning, the number of fixable High and Critical vulnera
 
 ---
 
-## Remediation
+## - Remediation
 
 The application image was originally built using:
 
@@ -190,7 +130,7 @@ Changes were then committed and deployed through the existing GitOps workflow.
 
 ---
 
-## Validation Scan Results (fastapi-v4):
+## - Validation Scan Results (fastapi-v4):
 
 The updated image was rescanned using Grype:
 
@@ -210,29 +150,21 @@ root@ubuntu-host Devops-Project-1 on  main [!?] ➜  grype janemils/janemils-
 python     3.13.14    3.15.0b2           binary  CVE-2026-7210        Critical  0.2% (40th)    0.2 
 ```
 ---
-### Outcome
+## - Outcome
 
 The updated image significantly reduced the number of fixable vulnerabilities compared to the previous version.
 
-```
-# With the v3 version:
-24 fixed vulnerabilities
-6 Critical
-23 High
-```
-
-```
-# With the v4 version:
-9 fixed vulnerabilities
-1 Critical
-0 High
-```
+| Metric | fastapi-v3 | fastapi-v4 |
+|----------|----------|----------|
+| Fixable Vulnerabilities | 114 | 9 |
+| Critical | 12 | 1 |
+| High | 74 | 0 |
 
 This demonstrates a common remediation strategy used in production environments where updating base images and dependencies can improve security posture without requiring application code changes.
 
 ---
 
-## Remaining Findings
+## - Remaining Findings
 
 A small number of vulnerabilities remained after remediation.
 
@@ -244,7 +176,7 @@ This reflects a common real-world security trade-off where risk must be balanced
 
 ---
 
-## Key Takeaways for Part 1 (Container Vulnerability Scanning):
+## - Key Takeaways for Part 1 (Container Vulnerability Scanning):
 
 * Vulnerability scanning should be performed regularly.
 * Container images inherit vulnerabilities from their base images.
@@ -255,16 +187,13 @@ This reflects a common real-world security trade-off where risk must be balanced
 
 
 ---
-
+  
+  
 # Part 2: Secret Detection (Gitleaks)
-
-## Objective
-
-Prevent secrets and credentials from being committed into source control.
-
----
-
-## Why Secret Detection Matters
+  
+The objective is to prevent secrets and credentials from being committed into source control.
+  
+## - Why Secret Detection Matters?
 
 Accidentally committing credentials can expose infrastructure, cloud accounts, databases, and third-party services.
 
@@ -280,7 +209,7 @@ Once committed, secrets become difficult to completely remove from Git history.
 
 ---
 
-## Installing Gitleaks
+## - Installing Gitleaks:-
 
 ```bash
 root@ubuntu-host ~ ➜ wget https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz
@@ -294,7 +223,7 @@ root@ubuntu-host ~ ➜ gitleaks version
 ```
 ---
 
-## Scanning the Repository
+## - Scanning the Repository
 
 Run a repository scan:
 
@@ -316,7 +245,7 @@ root@ubuntu-host Devops-Project-1 on  main [!?] ➜  gitleaks detect --source
 
 ---
 
-## Results
+## - Results
 
 The repository and its commit history were scanned for exposed credentials and secrets.
 
@@ -327,7 +256,7 @@ no leaks found
 
 ---
 
-## Key Learnings for Part 2 (Secrets Detection):
+## - Key Learnings for Part 2 (Secrets Detection):
 
 * Secret scanning helps prevent credential exposure.
 * Automated scanning reduces human error.
@@ -335,15 +264,16 @@ no leaks found
 
 ---
   
+  
 # Part 3: Security Gates in CI/CD
-
-## Objective
-
-Integrate automated security checks into the CI/CD pipeline.
+  
+The objective is to integrate automated security checks into the CI/CD pipeline.
+  
+Now that you have an understanding of how gitleaks and grype works and have tested it out locally, the next phase of this project will integrate Gitleaks and Grype into the GitHub Actions workflow to automate vulnerability scanning during the CI process and prevent vulnerable images from progressing further through the delivery pipeline.
 
 ---
 
-## What is a Security Gate?
+## - What is a Security Gate?
 
 A security gate is an automated checkpoint that evaluates security requirements before software progresses through the deployment pipeline.
 
@@ -365,7 +295,7 @@ Deploy
 
 ---
 
-## Grype Integration
+### Grype Integration:-
 
 Example GitHub Actions step:
 
@@ -377,7 +307,7 @@ Example GitHub Actions step:
 
 ---
 
-## Gitleaks Integration
+### Gitleaks Integration:-
 
 Example GitHub Actions step:
 
@@ -388,7 +318,7 @@ Example GitHub Actions step:
 
 ---
 
-## Current Approach
+## - Current Approach
 
 The pipeline currently performs security scans and reports findings.
 
@@ -400,28 +330,9 @@ Instead, scan results are reviewed and documented as part of the security proces
 
 ---
 
-## Future Improvements
-
-Potential enhancements include:
-
-* Fail builds on Critical vulnerabilities
-* SBOM generation
-* Container image signing with Cosign
-* Admission controller policies
-* Runtime security monitoring
-
----
-
-## Key Learnings for Part 3 (Security Gating): 
+## - Key Learnings for Part 3 (Security Gating): 
 
 * Security should be integrated into CI/CD pipelines.
 * Automated security checks improve consistency.
 * Security decisions require balancing risk, stability, and operational requirements.
 * Vulnerability reporting is often the first step before enforcement.
-
----
-  
-## Next Steps
-
-Now that you have an understanding of how gitleaks and grype works and have tested it out locally, the next phase of this project will integrate Gitleaks and Grype into the GitHub Actions workflow to automate vulnerability scanning during the CI process and prevent vulnerable images from progressing further through the delivery pipeline.
-
