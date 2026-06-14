@@ -1,3 +1,21 @@
+# Day 06 — GitHub Actions CI/CD Pipeline
+
+> **Note**
+>
+> The actual GitHub Actions workflow for this project is located under:
+>
+> ```
+> .github/workflows/ci.yaml
+> ```
+>
+> GitHub only recognizes workflow files placed inside the `.github/workflows/` directory. Because of this limitation, the workflow itself cannot be stored inside the `Day-06/` folder.
+>
+> This directory exists solely to document the concepts, design decisions, implementation details, and lessons learned during Day 06 of the project.
+>
+> The implementation lives in `.github/workflows/ci.yaml`, while this README serves as the accompanying technical documentation.
+
+---
+
 # GitHub Actions CI/CD Pipeline
 
 ## Overview
@@ -12,6 +30,22 @@ On every push to the `main` branch, the workflow:
 4. Commits the updated manifest back to the repository.
 5. Allows ArgoCD to automatically deploy the new version.
 6. Removes older container images from GHCR.
+
+---
+
+## Why GitHub Actions?
+
+After containerizing the application (Day 02), deploying it to Kubernetes (Day 03), and managing infrastructure using Terraform (Day 04), the next logical step was automating the software delivery process.
+
+The objective of this stage was to eliminate manual image builds and deployment updates by creating a repeatable CI/CD workflow capable of:
+
+* Building application images automatically.
+* Versioning images using immutable tags.
+* Publishing images to a container registry.
+* Updating Kubernetes manifests automatically.
+* Supporting GitOps-based deployments through ArgoCD.
+
+This forms the foundation for future stages involving security scanning, monitoring, and production-style deployment workflows.
 
 ---
 
@@ -158,19 +192,21 @@ Only the latest three container images are retained.
 ## Workflow Summary
 
 ```text
-Push to main
-      ↓
+Developer Pushes Code
+          ↓
+GitHub Actions Triggered
+          ↓
 Build Docker Image
-      ↓
+          ↓
 Push Image to GHCR
-      ↓
-Update deployment.yaml
-      ↓
-Commit Changes
-      ↓
-ArgoCD Sync
-      ↓
-Deploy to Kubernetes
+          ↓
+Update Kubernetes Manifest
+          ↓
+Commit Changes to Git
+          ↓
+ArgoCD Detects Changes
+          ↓
+Deploy Updated Version
 ```
 
 ---
@@ -178,9 +214,39 @@ Deploy to Kubernetes
 ## Key Learnings
 
 * GitHub Actions workflow automation.
-* Container image lifecycle management.
+* CI/CD pipeline fundamentals.
 * GitHub Container Registry (GHCR).
-* Immutable image tagging using commit SHAs.
-* Automated manifest updates.
-* GitOps deployment using ArgoCD.
-* Registry cleanup and maintenance.
+* Immutable image versioning using commit SHAs.
+* Automated Kubernetes manifest updates.
+* GitOps deployment patterns with ArgoCD.
+* Registry lifecycle management.
+* Separation of CI responsibilities (GitHub Actions) and CD responsibilities (ArgoCD).
+
+---
+
+## Challenges Encountered
+
+### Workflow Trigger Loops
+
+Updating the deployment manifest from within the workflow caused a new Git commit, which could potentially trigger the pipeline again.
+
+This was solved by including:
+
+```text
+[skip ci]
+```
+
+in the automated commit message.
+
+### Private Container Registry Access
+
+During development, image pulls required authentication because the repository and registry packages were private.
+
+This highlighted the importance of registry permissions and image pull secrets when working with Kubernetes.
+
+### Image Traceability
+
+Using mutable tags such as `latest` makes rollbacks and troubleshooting difficult.
+
+To address this, every image is tagged using the Git commit SHA, providing a clear link between deployed workloads and source code revisions.
+
