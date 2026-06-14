@@ -112,7 +112,7 @@ kubectl cluster-info --context kind-devops-test
 
 Not sure what to do next? 😅  Check out https://kind.sigs.k8s.io/docs/user/quick-start/
 
-root@ubuntu-host Devops-Project-1/Day-04/local-terraform on  main [?] via 💠 default ➜  kind cget clusters
+root@ubuntu-host Devops-Project-1/Day-04/local-terraform on  main [?] via 💠 default ➜  kind get clusters
 devops-test
 
 ```
