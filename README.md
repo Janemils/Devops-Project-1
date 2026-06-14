@@ -1,138 +1,159 @@
-# My DevOps App
+# From Code to Production: A Practical DevOps Journey
 
-**End-to-end DevOps project demonstrating CI/CD, Kubernetes, observability, security, and cost-aware infrastructure decisions.**
-
----
-
-## Project Overview
-
-This project simulates a small production-style service designed to demonstrate real-world DevOps practices.  
-The goal is not to build a feature-rich application, but to focus on building reliable, observable, secure, and cost-conscious infrastructure around a minimal API.
-
-The application evolves incrementally to showcase:
-- Continuous Integration and Deployment (CI/CD)
-- Containerization and Kubernetes orchestration
-- Monitoring, logging, and alerting
-- Security scanning and secrets management
-- Cost optimization and resource awareness
-
-Each stage of development is documented to highlight real engineering decisions, trade-offs, and lessons learned.
+*A hands-on project documenting how a simple application evolves into a production-ready platform through containerization, Kubernetes, Infrastructure as Code, GitOps, CI/CD, security, and observability.*
 
 ---
 
-## Application
+## Why This Project Exists
 
-The application is a lightweight FastAPI service with the following endpoints:
+When learning DevOps, many tutorials focus on individual tools:
 
-- `/health` – simple health check returning `{"status": "ok"}`
-- `/hello` – demo endpoint returning `{"message": "Hello from DevOps app"}`
-- `/metrics` – Prometheus-compatible metrics exposing request counts and latency
+* Docker tutorials
+* Kubernetes tutorials
+* Terraform tutorials
+* GitHub Actions tutorials
 
-The app is designed to be easily containerized, deployed to Kubernetes, and monitored using standard observability tools.
+While useful, they often fail to show how these tools work together in a real deployment workflow.
 
----
+This project was created to bridge that gap.
 
-## Architecture Overview
+Starting with a minimal FastAPI application, each phase introduces a new DevOps concept and demonstrates how modern engineering teams build, deploy, secure, and operate applications in production environments.
 
-High-level system design:
+The goal is not application development.
 
-High-level Architecture:
-
-        
-                        ┌───────────────┐
-                        │    Client     │
-                        └──────┬────────┘
-                               │
-                               v
-                        ┌───────────────┐
-                        │  FastAPI App  │
-                        └──────┬────────┘
-                               │
-                               v
-                        ┌──────────────────┐
-                        │ Docker Container │
-                        └──────┬───────────┘
-                               │
-                               v
-                        ┌────────────────────┐
-                        │   Kubernetes Pod   │
-                        └──────┬─────────────┘
-                               │
-               ┌───────────────┴────────────────┐
-               │                                │
-               v                                v
-       ┌───────────────┐                 ┌───────────────┐
-       │ Prometheus    │                 │ ELK (Logs)    │
-       │ (Metrics)     │                 │               │
-       └───────────────┘                 └───────────────┘
-
-
-- CI/CD pipelines automate build, test, security scans, and deployment
-- Observability integrates metrics, logging, and alerts
-- Infrastructure can be provisioned via Terraform
+The goal is understanding the complete DevOps lifecycle.
 
 ---
 
-## CI/CD Pipeline (Planned / WIP)
+## Who This Project Is For
 
-The CI/CD pipeline is designed to provide:
-- Automated linting and unit tests
-- Container image builds
-- Security scanning (Trivy, Gitleaks)
-- Deployment gating to local Kubernetes clusters (and optionally AKS)
-- End-to-end testing with metrics verification
+This project is intended for:
 
----
+* Students learning DevOps.
+* Software engineers transitioning into DevOps roles.
+* Platform Engineering beginners.
+* Cloud and Kubernetes enthusiasts.
+* Anyone wanting practical GitOps experience.
 
-## Observability & Reliability
-
-The project emphasizes production-style monitoring:
-- **Metrics**: request counts, latency histograms
-- **Logging**: structured logs aggregated in ELK stack
-- **Alerting**: simulated incident handling to validate monitoring
-
-This ensures the system can be debugged and maintained reliably.
+If you're comfortable writing a simple application but unsure how that application eventually reaches production, this project is designed to show that journey step-by-step.
 
 ---
 
-## Security Considerations
+## What You'll Learn
 
-Security best practices are integrated into the workflow:
-- Container image scanning for vulnerabilities
-- Secrets management via environment variables or ConfigMaps
-- Minimal permissions applied to Kubernetes resources
-- CI/CD pipeline blocks unsafe builds
+By following this project, you'll gain hands-on experience with:
+
+### Application Development
+
+* FastAPI
+* Health checks
+* Prometheus metrics
+
+### Containerization
+
+* Docker
+* Multi-stage builds
+* Image optimization
+
+### Kubernetes
+
+* Deployments
+* Services
+* Readiness probes
+* Liveness probes
+
+### Infrastructure as Code
+
+* Terraform
+* Kubernetes provider
+* Resource management
+  
+### Continuous Delivery (CD)
+
+* ArgoCD
+* GitOps deployments
+* Desired state management
+* Continuous reconciliation
+
+### Continuous Integration (CI)
+
+* GitHub Actions
+* Container image publishing
+* Automated build workflows
+* Manifest updates
 
 ---
 
-## Cost Awareness
+## Project Evolution
 
-Even when deployed locally, resource usage and hypothetical cloud costs are considered:
-- Kubernetes pods and nodes are sized realistically
-- Auto-scaling behavior can be simulated
-- Cost-optimization decisions and trade-offs are documented
-
----
-
-## Documentation & Articles
-
-Engineering decisions, debugging stories, and trade-offs are documented in `/docs`.  
-Planned documents include:
-- `/docs/architecture.md` – detailed architecture diagrams
-- `/docs/ci-cd.md` – pipeline stages and reasoning
-- `/docs/security.md` – scanning tools, secrets, and trade-offs
-- `/docs/postmortem.md` – incident debugging stories
-- `/docs/cost-optimization.md` – resource savings and cost reasoning
+| Day     | Topic                               |
+| ------- | ----------------------------------- |
+| [Day 01](https://github.com/Janemils/Devops-Project-1/tree/main/Day-01)  | FastAPI Application & Metrics.       |
+| [Day 02](https://github.com/Janemils/Devops-Project-1/tree/main/Day-02)  | Docker Containerization.             |
+| [Day 03](https://github.com/Janemils/Devops-Project-1/tree/main/Day-03)  | Kubernetes Deployment.               |
+| [Day 04](https://github.com/Janemils/Devops-Project-1/tree/main/Day-04)  | Terraform (Infrastructure as Code).  |
+| [Day 05](https://github.com/Janemils/Devops-Project-1/tree/main/Day-05)  | GitOps with ArgoCD.                  |
+| [Day 06](https://github.com/Janemils/Devops-Project-1/tree/main/Day-06)  | CI with GitHub Actions.              |
 
 ---
 
-## Project Status
+## Architecture (Current)
 
-- Day 1: FastAPI application with `/health` and `/metrics` endpoints ✔️
-- Subsequent days will expand containerization, CI/CD, monitoring, logging, alerting, and cloud deployment.
+```text
+Developer
+    ↓
+GitHub Repository
+    ↓
+GitHub Actions
+    ↓
+GitHub Container Registry (GHCR)
+    ↓
+Update Kubernetes Manifest
+    ↓
+ArgoCD
+    ↓
+Kubernetes Cluster
+    ↓
+FastAPI Application
+```
 
 ---
 
-## Key Takeaway
+## Key Philosophy
 
-This project prioritizes **DevOps thinking** over application complexity, demonstrating the ability to design, deploy, secure, and monitor production-ready systems.
+The objective of this repository is not to showcase tools.
+
+The objective is to understand the engineering decisions behind those tools:
+
+* Why use Infrastructure as Code?
+* Why GitOps instead of push-based deployments?
+* Why immutable image tags?
+* Why health probes matter?
+* Why vulnerability scanning is required?
+* Why observability is critical?
+
+Every stage documents not only what was implemented, but also why it was implemented and what trade-offs were considered.
+
+---
+
+## Repository Structure
+
+The project is organized by learning milestones rather than tools.
+
+Each day introduces a new DevOps concept and contains the relevant code, configurations, documentation, troubleshooting notes, and engineering decisions for that stage of the journey.
+
+This structure allows readers to follow the project incrementally, understand the reasoning behind each implementation, and observe how a simple application evolves into a production-ready platform.
+
+---
+
+## Final Outcome
+
+By the end of this project, you'll have built and operated a complete application delivery pipeline:
+
+* Application → Container
+* Container → Kubernetes
+* Infrastructure → Terraform
+* Deployment → GitOps
+* Automation → GitHub Actions
+
+More importantly, you'll understand how these pieces fit together to form a modern production platform.
