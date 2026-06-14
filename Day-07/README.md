@@ -1,11 +1,20 @@
-# Day 07 - Container Vulnerability Scanning
+# Security & Vulnerability Management
 
-## Objective
+Security is not a single tool or a one-time activity.
 
-Introduce container security practices by identifying, analyzing, and remediating vulnerabilities within application container images.
+Modern DevOps practices integrate security throughout the software delivery lifecycle by continuously identifying vulnerabilities, preventing credential leaks, and enforcing security controls before software reaches production.
+
+This section demonstrates how security can be incorporated into a CI/CD workflow using container image scanning, secret detection, and pipeline security gates.
 
 ---
 
+# Part 1: Container Vulnerability Scanning (Grype)
+## Objective
+
+Identify known vulnerabilities within the container image before deployment.
+
+---
+  
 ## Why Grype?
 
 Container vulnerability scanning is commonly performed using tools such as Trivy, Grype, Clair, and Snyk.
@@ -143,6 +152,7 @@ openssl                  3.5.4-1~deb13u2  3.5.6-1~deb13u2             deb     CV
 openssl-provider-legacy  3.5.4-1~deb13u2  3.5.6-1~deb13u2             deb     CVE-2026-34181       High        < 0.1% (0th)   < 0.1  
 
 ```
+---
 
 ### Analysis
 
@@ -180,7 +190,7 @@ Changes were then committed and deployed through the existing GitOps workflow.
 
 ---
 
-## Validation Scan Results (fastapi-v4)
+## Validation Scan Results (fastapi-v4):
 
 The updated image was rescanned using Grype:
 
@@ -199,7 +209,7 @@ root@ubuntu-host Devops-Project-1 on  main [!?] ➜  grype janemils/janemils-
    └── by status:   9 fixed, 109 not-fixed, 109 ignored 
 python     3.13.14    3.15.0b2           binary  CVE-2026-7210        Critical  0.2% (40th)    0.2 
 ```
-
+---
 ### Outcome
 
 The updated image significantly reduced the number of fixable vulnerabilities compared to the previous version.
@@ -234,7 +244,7 @@ This reflects a common real-world security trade-off where risk must be balanced
 
 ---
 
-## Key Takeaways
+## Key Takeaways for Part 1 (Container Vulnerability Scanning):
 
 * Vulnerability scanning should be performed regularly.
 * Container images inherit vulnerabilities from their base images.
@@ -243,9 +253,175 @@ This reflects a common real-world security trade-off where risk must be balanced
 * Security findings should be analyzed before remediation decisions are made.
 * Vulnerability scanning is most effective when integrated into CI/CD pipelines.
 
+
 ---
 
+# Part 2: Secret Detection (Gitleaks)
+
+## Objective
+
+Prevent secrets and credentials from being committed into source control.
+
+---
+
+## Why Secret Detection Matters
+
+Accidentally committing credentials can expose infrastructure, cloud accounts, databases, and third-party services.
+
+Examples include:
+
+* AWS Access Keys
+* GitHub Personal Access Tokens
+* Database passwords
+* API keys
+* Certificates and private keys
+
+Once committed, secrets become difficult to completely remove from Git history.
+
+---
+
+## Installing Gitleaks
+
+```bash
+root@ubuntu-host ~ ➜ wget https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz
+root@ubuntu-host ~ ➜ tar -xzf gitleaks_8.30.1_linux_x64.tar.gz
+root@ubuntu-host ~ ➜ sudo mv gitleaks /usr/local/bin/
+
+# Verify the gitleaks installation version.
+root@ubuntu-host ~ ➜ gitleaks version
+8.30.1
+
+```
+---
+
+## Scanning the Repository
+
+Run a repository scan:
+
+```bash
+root@ubuntu-host ~ ➜  cd Devops-Project-1/
+
+root@ubuntu-host Devops-Project-1 on  main [!?] ➜  gitleaks detect --source .
+
+    ○
+    │╲
+    │ ○
+    ○ ░
+    ░    gitleaks
+
+3:35PM INF 87 commits scanned.
+3:35PM INF scanned ~148540 bytes (148.54 KB) in 325ms
+3:35PM INF no leaks found
+```
+
+---
+
+## Results
+
+The repository and its commit history were scanned for exposed credentials and secrets.
+
+```text
+87 commits scanned.
+no leaks found
+```
+
+---
+
+## Key Learnings for Part 2 (Secrets Detection):
+
+* Secret scanning helps prevent credential exposure.
+* Automated scanning reduces human error.
+* Security should begin before code reaches production.
+
+---
+  
+# Part 3: Security Gates in CI/CD
+
+## Objective
+
+Integrate automated security checks into the CI/CD pipeline.
+
+---
+
+## What is a Security Gate?
+
+A security gate is an automated checkpoint that evaluates security requirements before software progresses through the deployment pipeline.
+
+Example:
+
+```text
+Code Commit
+      ↓
+Build Image
+      ↓
+Gitleaks Scan
+      ↓
+Grype Scan
+      ↓
+Security Review
+      ↓
+Deploy
+```
+
+---
+
+## Grype Integration
+
+Example GitHub Actions step:
+
+```yaml
+- name: Scan Container Image
+  run: |
+    grype ghcr.io/${{ github.repository }}:${{ github.sha }}
+```
+
+---
+
+## Gitleaks Integration
+
+Example GitHub Actions step:
+
+```yaml
+- name: Run Gitleaks
+  uses: gitleaks/gitleaks-action@v2
+```
+
+---
+
+## Current Approach
+
+The pipeline currently performs security scans and reports findings.
+
+The workflow does not automatically fail on vulnerability detection because one known Critical vulnerability currently exists in the latest stable Python image used by the project.
+
+Automatically failing the pipeline would block all deployments without a stable remediation path.
+
+Instead, scan results are reviewed and documented as part of the security process.
+
+---
+
+## Future Improvements
+
+Potential enhancements include:
+
+* Fail builds on Critical vulnerabilities
+* SBOM generation
+* Container image signing with Cosign
+* Admission controller policies
+* Runtime security monitoring
+
+---
+
+## Key Learnings for Part 3 (Security Gating): 
+
+* Security should be integrated into CI/CD pipelines.
+* Automated security checks improve consistency.
+* Security decisions require balancing risk, stability, and operational requirements.
+* Vulnerability reporting is often the first step before enforcement.
+
+---
+  
 ## Next Steps
 
-Now that you have an understanding of how grype works and have tested it out locally, the next phase of this project will integrate Grype into the GitHub Actions workflow to automate vulnerability scanning during the CI process and prevent vulnerable images from progressing further through the delivery pipeline.
+Now that you have an understanding of how gitleaks and grype works and have tested it out locally, the next phase of this project will integrate Gitleaks and Grype into the GitHub Actions workflow to automate vulnerability scanning during the CI process and prevent vulnerable images from progressing further through the delivery pipeline.
 
