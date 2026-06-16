@@ -1,0 +1,4 @@
+# .grype.yaml
+
+ignore:
+  - vulnerability: CVE-2026-7210

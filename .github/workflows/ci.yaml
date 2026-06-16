@@ -20,6 +20,10 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
+    # Secret detection (Day-07).
+    - name: Run Gitleaks
+      uses: gitleaks/gitleaks-action@v2
+
     # Login to GHCR.
     - name: Login to GHCR
       run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
@@ -32,6 +36,19 @@ jobs:
           -f Day-02/Dockerfile \
           .
 
+    # Installing Grype for security scanning of image (Day-07).
+    - name: Install Grype
+      run: |
+        curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh
+        sudo mv ./bin/grype /usr/local/bin/
+
+    # Scan image for vulnerabilities (Day-07).
+    - name: Scan Image
+      run: |
+        grype $IMAGE_NAME:${{ github.sha }} \
+          --config .grype.yaml \
+          --fail-on critical
+      
     # Push image.
     - name: Push image
       run: |
