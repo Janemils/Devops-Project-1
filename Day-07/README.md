@@ -1,46 +1,45 @@
 # Security & Vulnerability Management
 
-Security is not a single tool or a one-time activity.
+Security is a continuous process that helps identify vulnerabilities, prevent credential leaks, and enforce controls before software reaches production.
 
-Modern DevOps practices integrate security throughout the software delivery lifecycle by continuously identifying vulnerabilities, preventing credential leaks, and enforcing security controls before software reaches production.
+This section demonstrates:
 
-This section demonstrates how security can be incorporated into a CI/CD workflow using container image scanning, secret detection, and pipeline security gates.
+* Container vulnerability scanning with Grype
+* Secret detection with Gitleaks
+* Security gates within CI/CD pipelines
 
 ---
-  
-  
-# Part 1: Container Vulnerability Scanning (Grype)
-  
-The objective is to identify known vulnerabilities within the container image before deployment.
-  
-## - Why Grype?
 
-Container vulnerability scanning is commonly performed using tools such as Trivy, Grype, Clair, and Snyk.
+# Part 1: Container Vulnerability Scanning (Grype)
+
+The objective is to identify known vulnerabilities within container images before deployment.
+
+## Why Grype?
+
+Container vulnerability scanning can be performed using tools such as Trivy, Grype, Clair, and Snyk.
 
 For this project, Grype was selected to gain hands-on experience with an alternative scanning solution and to better understand the vulnerability management process independent of any specific tool.
 
 Grype provides:
 
-- Container image vulnerability scanning
-- CI/CD integration capabilities
-- Policy-based security enforcement
-- Lightweight installation and usage
-
-The objective of this phase is not to compare scanners, but to understand how vulnerabilities are identified, assessed, and remediated within containerized workloads.
+* Container image vulnerability scanning
+* CI/CD integration capabilities
+* Policy-based security enforcement
+* Lightweight installation and usage
 
 ---
 
-## - Installing Grype:-
+## Installing Grype
 
 ### Linux
 
 ```bash
-# Install Grype:
+# Install Grype
 root@ubuntu-host ~ ➜  curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh
 
 root@ubuntu-host ~ ➜  sudo mv ./bin/grype /usr/local/bin/
 
-# Verify the version of grype installed:
+# Verify installation
 root@ubuntu-host ~ ➜  grype version
 Application:         grype
 Version:             0.114.0
@@ -56,176 +55,153 @@ Supported DB Schema: 6
 
 ---
 
-## - Security Assessment Workflow
+## Security Assessment Workflow
 
-The security assessment followed the process below:
-
-1. Scan the existing container image.
-2. Review vulnerability findings.
-3. Investigate affected packages.
-4. Apply remediation.
-5. Rebuild the image.
-6. Validate improvements through rescanning.
+```text
+Scan Image
+    ↓
+Review Findings
+    ↓
+Remediate
+    ↓
+Rebuild Image
+    ↓
+Rescan & Validate
+```
 
 ---
 
-## - Initial Scan Results (fastapi-v3)
+## Initial Scan Results (fastapi-v3)
 
-The existing application image was scanned using Grype:
+The original application image was scanned using Grype:
 
 ```bash
 # Let's identify the critical and the high vulnerabilities of the 'janemils/janemils-app:fastapi-v3' image using grype.
-root@ubuntu-host ~ ➜  grype janemils/janemils-app:fastapi-v3 --only-fixed | grep -E "High|Critical"
- ✔ Loaded image                                           janemils/janemils-app:fastapi-v3 
- ✔ Parsed image                    sha256:f2448c57f6d36309d03cfe51b17c54d103f32d8f811f19a92  
- ✔ Cataloged contents              eb3de8a439e428d95b2aba9379f0f9b256c85e9b5ba6db022d08a858  
-   ├── ✔ Packages                        [127 packages]  
-   ├── ✔ Executables                     [759 executables]  
-   ├── ✔ File metadata                   [2,729 locations]  
-   └── ✔ File digests                    [2,729 files]  
- ✔ Scanned for vulnerabilities     [114 vulnerability matches]  
-   ├── by severity: 12 critical, 74 high, 72 medium, 14 low, 51 negligible
-   └── by status:   114 fixed, 109 not-fixed, 109 ignored 
-python                   3.11.15          3.15.0b2                    binary  CVE-2026-7210        Critical    0.2% (40th)    0.2    
-libssl3t64               3.5.4-1~deb13u2  3.5.5-1~deb13u2             deb     CVE-2026-28389       High        0.1% (34th)    0.1    
-openssl                  3.5.4-1~deb13u2  3.5.5-1~deb13u2             deb     CVE-2026-28389       High        0.1% (34th)    0.1    
-............. (113 vulnerabilities.)
-
+root@ubuntu-host ~ ➜ grype janemils/janemils-app:fastapi-v3 --only-fixed | grep -E "High|Critical"
 ```
+
+Report: [V3 image scanning report.](https://github.com/Janemils/Devops-Project-1/blob/main/Day-07/reports/grype-v3.txt)
+  
 ---
 
-## - Analysis
+## Analysis
 
-The scan results suggested that many vulnerabilities originated from components inherited from the base image rather than the application code itself.
+Most findings were associated with packages inherited from the base image rather than the application code itself.
 
-To validate this assumption, the base image was upgraded from Python 3.11 Slim to Python 3.13 Slim and the image was rebuilt.
+To validate this assumption, the image was rebuilt using a newer Python base image and rescanned.
 
-After rebuilding and rescanning, the number of fixable High and Critical vulnerabilities dropped significantly, confirming that the base image version was a major contributor to the overall vulnerability count.
+The results showed a significant reduction in fixable vulnerabilities, confirming that the base image was the primary source of many findings.
 
 ---
 
-## - Remediation
+## Remediation
 
-The application image was originally built using:
+The image originally used:
 
 ```dockerfile
 FROM python:3.11-slim
 ```
 
-To reduce exposure to known vulnerabilities, the base image was upgraded to (latest stable version at the time of this update: 15-06-2026):
+It was updated to:
 
 ```dockerfile
 FROM python:3.13-slim
 ```
 
-The image was rebuilt, pushed to dockerhub and published as:
+The image was rebuilt and published as:
 
 ```text
 janemils/janemils-app:fastapi-v4
 ```
 
-The Kubernetes deployment manifests and Terraform configuration were updated to reference the remediated image version.
-
-Changes were then committed and deployed through the existing GitOps workflow.
+Deployment manifests and Terraform configurations were updated to reference the remediated image version.
 
 ---
 
-## - Validation Scan Results (fastapi-v4):
+## Validation Scan Results (fastapi-v4)
 
-The updated image was rescanned using Grype:
+The updated image was rescanned:
 
 ```bash
 #  Let's identify the critical and the high vulnerabilities of the 'janemils/janemils-app:fastapi-v4' image using grype.
 root@ubuntu-host Devops-Project-1 on  main [!?] ➜  grype janemils/janemils-app:fastapi-v4 --only-fixed | grep -E "High|Critical"
- ✔ Loaded image                                           janemils/janemils-app:fastapi-v4 
- ✔ Parsed image                    sha256:f9d242eb6987413af266d8ae0803791d65b28e6916b3ec550  
- ✔ Cataloged contents              07c7e2c0a20176464a70279cc3f910c0a229e6fb3fa9b1bc03c15c1f  
-   ├── ✔ Packages                        [109 packages]  
-   ├── ✔ Executables                     [752 executables]  
-   ├── ✔ File metadata                   [2,681 locations]  
-   └── ✔ File digests                    [2,681 files]  
- ✔ Scanned for vulnerabilities     [9 vulnerability matches]  
-   ├── by severity: 6 critical, 18 high, 40 medium, 4 low, 50 negligible
-   └── by status:   9 fixed, 109 not-fixed, 109 ignored 
-python     3.13.14    3.15.0b2           binary  CVE-2026-7210        Critical  0.2% (40th)    0.2 
 ```
----
-## - Outcome
 
-The updated image significantly reduced the number of fixable vulnerabilities compared to the previous version.
-
-| Metric | fastapi-v3 | fastapi-v4 |
-|----------|----------|----------|
-| Fixable Vulnerabilities | 114 | 9 |
-| Critical | 12 | 1 |
-| High | 74 | 0 |
-
-This demonstrates a common remediation strategy used in production environments where updating base images and dependencies can improve security posture without requiring application code changes.
-
+Report: [V4 image scanning report.](https://github.com/Janemils/Devops-Project-1/blob/main/Day-07/reports/grype-v4.txt)
+  
 ---
 
-## - Remaining Findings
+## Outcome
 
-A small number of vulnerabilities remained after remediation.
+| Metric                  | fastapi-v3 | fastapi-v4 |
+| ----------------------- | ---------- | ---------- |
+| Fixable Vulnerabilities | 114        | 9          |
+| Critical                | 12         | 1          |
+| High                    | 74         | 0          |
 
-One notable finding affected the Python runtime itself, where the recommended fix was only available in a beta Python release.
-
-Since beta runtimes are generally not considered production-ready, the finding was documented and accepted temporarily rather than introducing an unstable runtime into the application.
-
-This reflects a common real-world security trade-off where risk must be balanced against operational stability.
+Updating the base image significantly improved the security posture without requiring application code changes.
 
 ---
 
-## - Key Takeaways for Part 1 (Container Vulnerability Scanning):
+## Remaining Finding
 
-* Vulnerability scanning should be performed regularly.
-* Container images inherit vulnerabilities from their base images.
-* Many vulnerabilities can be remediated through dependency and runtime upgrades.
+One Critical vulnerability remained after remediation:
+
+| CVE           | Component      | Status                  |
+| ------------- | -------------- | ----------------------- |
+| CVE-2026-7210 | Python Runtime | No stable fix available |
+
+The recommended fix currently requires upgrading to a beta Python release.
+
+Since beta runtimes are generally not considered production-ready, the vulnerability was documented and accepted temporarily.
+
+---
+
+## Key Takeaways
+
+* Container images inherit vulnerabilities from base images.
+* Updating runtimes and dependencies can significantly reduce risk.
 * Not every vulnerability has an immediate production-ready fix.
-* Security findings should be analyzed before remediation decisions are made.
-* Vulnerability scanning is most effective when integrated into CI/CD pipelines.
-
+* Security findings should be reviewed before remediation decisions are made.
+* Vulnerability scanning should be automated within CI/CD pipelines.
 
 ---
-  
-  
+
 # Part 2: Secret Detection (Gitleaks)
-  
-The objective is to prevent secrets and credentials from being committed into source control.
-  
-## - Why Secret Detection Matters?
 
-Accidentally committing credentials can expose infrastructure, cloud accounts, databases, and third-party services.
+The objective is to prevent credentials and sensitive information from being committed into source control.
 
-Examples include:
+## Why Secret Detection Matters?
+
+Examples of commonly leaked secrets include:
 
 * AWS Access Keys
 * GitHub Personal Access Tokens
 * Database passwords
 * API keys
-* Certificates and private keys
+* Private keys and certificates
 
-Once committed, secrets become difficult to completely remove from Git history.
+Once committed, secrets can remain accessible through Git history even after deletion.
 
 ---
 
-## - Installing Gitleaks:-
+## Installing Gitleaks
 
 ```bash
-root@ubuntu-host ~ ➜ wget https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz
-root@ubuntu-host ~ ➜ tar -xzf gitleaks_8.30.1_linux_x64.tar.gz
-root@ubuntu-host ~ ➜ sudo mv gitleaks /usr/local/bin/
+root@ubuntu-host ~ ➜  wget https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz
+
+root@ubuntu-host ~ ➜  tar -xzf gitleaks_8.30.1_linux_x64.tar.gz
+
+root@ubuntu-host ~ ➜  sudo mv gitleaks /usr/local/bin/
 
 # Verify the gitleaks installation version.
 root@ubuntu-host ~ ➜ gitleaks version
 8.30.1
-
 ```
+
 ---
 
-## - Scanning the Repository
-
-Run a repository scan:
+## Scanning the Repository
 
 ```bash
 root@ubuntu-host ~ ➜  cd Devops-Project-1/
@@ -243,11 +219,7 @@ root@ubuntu-host Devops-Project-1 on  main [!?] ➜  gitleaks detect --source
 3:35PM INF no leaks found
 ```
 
----
-
-## - Results
-
-The repository and its commit history were scanned for exposed credentials and secrets.
+Example output:
 
 ```text
 87 commits scanned.
@@ -256,28 +228,34 @@ no leaks found
 
 ---
 
-## - Key Learnings for Part 2 (Secrets Detection):
+## Results
+
+The repository and commit history were scanned for exposed credentials and secrets.
+
+```text
+87 commits scanned.
+no leaks found
+```
+
+---
+
+## Key Takeaways
 
 * Secret scanning helps prevent credential exposure.
 * Automated scanning reduces human error.
 * Security should begin before code reaches production.
 
 ---
-  
-  
+
 # Part 3: Security Gates in CI/CD
-  
-The objective is to integrate automated security checks into the CI/CD pipeline.
-  
-Now that you have an understanding of how gitleaks and grype works and have tested it out locally, the next phase of this project will integrate Gitleaks and Grype into the GitHub Actions workflow to automate vulnerability scanning during the CI process and prevent vulnerable images from progressing further through the delivery pipeline.
+
+After validating Grype and Gitleaks locally, both tools were integrated into the GitHub Actions workflow to automate security checks during CI.
 
 ---
 
-## - What is a Security Gate?
+## What is a Security Gate?
 
-A security gate is an automated checkpoint that evaluates security requirements before software progresses through the deployment pipeline.
-
-Example:
+A security gate is an automated checkpoint that evaluates security requirements before software progresses through the delivery pipeline.
 
 ```text
 Code Commit
@@ -295,21 +273,7 @@ Deploy
 
 ---
 
-### Grype Integration:-
-
-Example GitHub Actions step:
-
-```yaml
-- name: Scan Container Image
-  run: |
-    grype ghcr.io/${{ github.repository }}:${{ github.sha }}
-```
-
----
-
-### Gitleaks Integration:-
-
-Example GitHub Actions step:
+## Gitleaks Integration
 
 ```yaml
 - name: Run Gitleaks
@@ -318,42 +282,56 @@ Example GitHub Actions step:
 
 ---
 
-## - Current Approach
+## Grype Integration
 
-The pipeline currently performs security scans and reports findings.
-
-The workflow does not automatically fail on vulnerability detection because one known Critical vulnerability currently exists in the latest stable Python image used by the project.
-
-Automatically failing the pipeline would block all deployments without a stable remediation path.
-
-Instead, scan results are reviewed and documented as part of the security process.
-
----
-
-## - Key Learnings for Part 3 (Security Gating): 
-
-* Security should be integrated into CI/CD pipelines.
-* Automated security checks improve consistency.
-* Security decisions require balancing risk, stability, and operational requirements.
-* Vulnerability reporting is often the first step before enforcement.
+```yaml
+- name: Security Scan
+  run: |
+    grype $IMAGE_NAME:${{ github.sha }} \
+      --config .grype.yaml \
+      --only-fixed \
+      --fail-on critical
+```
 
 ---
 
-## Accepted Security Risk
+## Why the Pipeline Initially Failed:
 
-### CVE-2026-7210
+When Grype was configured with:
 
-| Item | Value |
-|--------|--------|
-| Severity | Critical |
-| Component | Python Runtime |
-| Current Version | 3.13.14 |
-| Fixed Version | 3.15.0 beta |
-| Decision | Accepted Temporarily |
-| Reason | No stable production-ready fix available |
+```yaml
+--fail-on critical
+```
 
-The vulnerability was identified during container image scanning with Grype.
+the pipeline failed because the image contained a known Critical vulnerability:
 
-At the time of implementation, the only available fix required upgrading to a beta Python release. Since beta runtimes are generally not recommended for production workloads, the vulnerability was documented and accepted temporarily.
+| CVE           | Component      | Status                  |
+| ------------- | -------------- | ----------------------- |
+| CVE-2026-7210 | Python Runtime | No stable fix available |
 
-Future image updates should re-evaluate this exception once a stable Python release containing the fix becomes available.
+Although the vulnerability had a fix, the fix was only available in a beta Python release, which was not considered suitable for production use.
+
+---
+
+## Risk Acceptance
+
+To avoid blocking deployments indefinitely, the vulnerability was documented and added to `.grype.yaml` as an accepted risk.
+
+This allows the pipeline to:
+
+* Ignore the approved exception.
+* Continue enforcing security policies.
+* Fail automatically for any new Critical vulnerabilities.
+
+This approach mirrors common production practices where security findings are reviewed, documented, and tracked until a stable remediation becomes available.
+You can check out this failed pipeline if you want to explore more about the vulnerabilities that I ignored: [Failed Pipeline.](https://github.com/Janemils/Devops-Project-1/actions/runs/27637019809)
+
+---
+
+## Key Takeaways
+
+* Security should be integrated directly into CI pipelines.
+* Automated checks improve consistency and reduce manual effort.
+* Security gates help prevent vulnerable artifacts from progressing through the delivery pipeline.
+* Risk acceptance should be documented and reviewed regularly.
+* Not all vulnerabilities should be treated equally; context and remediation availability matter.
