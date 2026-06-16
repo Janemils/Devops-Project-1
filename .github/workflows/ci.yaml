@@ -47,7 +47,7 @@ jobs:
       run: |
         grype $IMAGE_NAME:${{ github.sha }} \
           --config .grype.yaml \
-          --fail-on critical
+          --fail-on high
       
     # Push image.
     - name: Push image
