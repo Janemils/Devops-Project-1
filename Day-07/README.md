@@ -336,3 +336,24 @@ Instead, scan results are reviewed and documented as part of the security proces
 * Automated security checks improve consistency.
 * Security decisions require balancing risk, stability, and operational requirements.
 * Vulnerability reporting is often the first step before enforcement.
+
+---
+
+## Accepted Security Risk
+
+### CVE-2026-7210
+
+| Item | Value |
+|--------|--------|
+| Severity | Critical |
+| Component | Python Runtime |
+| Current Version | 3.13.14 |
+| Fixed Version | 3.15.0 beta |
+| Decision | Accepted Temporarily |
+| Reason | No stable production-ready fix available |
+
+The vulnerability was identified during container image scanning with Grype.
+
+At the time of implementation, the only available fix required upgrading to a beta Python release. Since beta runtimes are generally not recommended for production workloads, the vulnerability was documented and accepted temporarily.
+
+Future image updates should re-evaluate this exception once a stable Python release containing the fix becomes available.
