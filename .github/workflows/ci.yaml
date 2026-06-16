@@ -19,6 +19,9 @@ jobs:
     # Checkout code.
     - name: Checkout
       uses: actions/checkout@v4
+      # Adding this as this downloads the complete git history.
+      with:
+        fetch-depth: 0
 
     # Secret detection (Day-07).
     - name: Run Gitleaks
