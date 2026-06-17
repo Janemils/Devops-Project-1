@@ -1,0 +1,10 @@
+
+server:
+  persistentVolume:
+    enabled: false
+
+alertmanager:
+    enabled: false
+
+prometheus-node-exporter:
+  enabled: false
