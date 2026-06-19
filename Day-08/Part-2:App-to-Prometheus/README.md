@@ -11,7 +11,7 @@ The FastAPI application was instrumented using the Prometheus Python client and 
 ```text
 /metrics
 ```
-Follow Day-03 to get the application up and running in your cluster.
+Follow [Day-03](https://github.com/Janemils/Devops-Project-1/tree/main/Day-03) to get the application up and running in your cluster.
 
 Verification:
 
@@ -89,6 +89,7 @@ controlplane Devops-Project-1/Day-08/App-to-Prometheus on  main ➜  kubectl 
     - targets:
       - janemils-app-deployment.default.svc.cluster.local:8000
 ```
+<img width="1000" height="695" alt="image" src="https://github.com/user-attachments/assets/4413926b-3516-4d86-b2dd-36de01db865c" />
 
 This instructs Prometheus to periodically collect metrics from the application.
 
@@ -124,9 +125,8 @@ Status → Targets
 
 Result:
 
-```text
-janemils-app → UP
-```
+<img width="1000" height="362" alt="image" src="https://github.com/user-attachments/assets/b35947df-8790-409f-a5de-793affa5ac81" />
+
 
 This confirmed successful metric collection.
 
@@ -144,9 +144,8 @@ up{job="janemils-app"}
 
 Result:
 
-```text
-1
-```
+<img width="1000" height="409" alt="image" src="https://github.com/user-attachments/assets/a9df27eb-692a-490f-ad9e-a838d1d54740" />
+
 
 Additional queries:
 
@@ -171,117 +170,6 @@ Prometheus successfully collected both application metrics and runtime metrics.
 This is where observability becomes useful.
 
 Most production teams focus on five categories of metrics.
-
-## 1. Availability Metrics
-
-**Question:** Is the application alive?
-
-Metrics:
-
-```promql
-up
-```
-
-```promql
-probe_success
-```
-
-Example alert:
-
-```text
-Application Down
-```
-
-Condition:
-
-```promql
-up == 0
-```
-
----
-
-## 2. Traffic Metrics
-
-**Question:** How many requests are we receiving?
-
-Metrics:
-
-```promql
-http_requests_total
-```
-
-```promql
-rate(http_requests_total[5m])
-```
-
-Useful for:
-
-* Traffic analysis
-* Capacity planning
-* Detecting traffic spikes
-
----
-
-## 3. Latency Metrics
-
-**Question:** How fast are requests being served?
-
-Metrics:
-
-```promql
-http_request_latency_seconds
-```
-
-This is often the most important application metric because users typically notice slow applications before complete outages.
-
----
-
-## 4. Error Metrics
-
-**Question:** Are requests failing?
-
-Example:
-
-```promql
-sum(rate(http_requests_total{status=~"5.."}[5m]))
-```
-
-Tracks:
-
-```text
-500
-502
-503
-504
-```
-
-This is one of the first alerts configured in most production environments.
-
----
-
-## 5. Resource Metrics
-
-**Question:** Will the application run out of resources?
-
-### Memory
-
-```promql
-process_resident_memory_bytes
-```
-
-### CPU
-
-```promql
-rate(process_cpu_seconds_total[5m])
-```
-
-These metrics help identify:
-
-* Memory leaks
-* CPU bottlenecks
-* Scaling requirements
-
----
 
 # The Golden Signals
 
@@ -311,4 +199,8 @@ For this project, the most valuable Grafana dashboard panels will be:
 * Target Health (`up`)
 
 These seven panels provide a realistic production monitoring dashboard and establish a strong observability foundation.
+
+You can refer to this to play around for the further metrics testing with the application that we have.
+
+
 
