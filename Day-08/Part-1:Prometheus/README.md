@@ -119,7 +119,8 @@ This is a common limitation when running monitoring stacks inside nested contain
 
 ### Resolution for Issue #1:
 
-Node Exporter was disabled through Helm values in [premetheus-values.yaml](https://github.com/Janemils/Devops-Project-1/blob/main/Day-08/Prometheus/prometheus-values.yaml):
+Node Exporter was disabled through Helm values in [prometheus-values.yaml](https://github.com/Janemils/Devops-Project-1/blob/main/Day-08/Prometheus/prometheus-values.yaml):
+
 
 ```yaml
 prometheus-node-exporter:
@@ -159,7 +160,7 @@ Alertmanager attempted to create a PersistentVolumeClaim that could not be satis
 
 ### Resolution
 
-Persistent storage was disabled for Alertmanager in [premetheus-values.yaml](https://github.com/Janemils/Devops-Project-1/blob/main/Day-08/Prometheus/prometheus-values.yaml)::
+Persistent storage was disabled for Alertmanager in [prometheus-values.yaml](https://github.com/Janemils/Devops-Project-1/blob/main/Day-08/Prometheus/prometheus-values.yaml)::
 
 ```yaml
 alertmanager:
@@ -190,7 +191,7 @@ Similar to Alertmanager, Prometheus attempted to provision persistent storage th
 
 ### Resolution
 
-Persistent storage was disabled for the Prometheus server in [premetheus-values.yaml](https://github.com/Janemils/Devops-Project-1/blob/main/Day-08/Prometheus/prometheus-values.yaml)::
+Persistent storage was disabled for the Prometheus server in [prometheus-values.yaml](https://github.com/Janemils/Devops-Project-1/blob/main/Day-08/Prometheus/prometheus-values.yaml)::
 
 ```yaml
 server:
