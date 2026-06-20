@@ -35,3 +35,8 @@ def hello():
 def crash():
     """Simulate container crash for liveness probe demo"""
     os._exit(1)  # Immediately kill the process
+
+# To capture the error code for Day-08.
+@app.get("/error")
+def error():
+    raise HTTPException(status_code=500, detail="Internal Server Error")
