@@ -11,17 +11,17 @@ Prometheus was deployed using Helm into a dedicated `monitoring` namespace.
 Create the monitoring namespace:
 
 ```bash
-controlplane Devops-Project-1/Day-08/Prometheus on  main ➜  kubectl create namespace monitoring
+controlplane Devops-Project-1/Day-08/Part-1:Prometheus on  main ➜  kubectl create namespace monitoring
 namespace/monitoring created
 ```
 
 Add the Prometheus Helm repository:
 
 ```bash
-controlplane Devops-Project-1/Day-08/Prometheus on  main ➜  helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+controlplane Devops-Project-1/Day-08/Part-1:Prometheus on  main ➜  helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 "prometheus-community" has been added to your repositories
 
-controlplane Devops-Project-1/Day-08/Prometheus on  main ➜  helm repo update
+controlplane Devops-Project-1/Day-08/Part-1:Prometheus on  main ➜  helm repo update
 Hang tight while we grab the latest from your chart repositories...
 ...Successfully got an update from the "prometheus-community" chart repository
 Update Complete. ⎈Happy Helming!⎈
@@ -30,7 +30,7 @@ Update Complete. ⎈Happy Helming!⎈
 Install Prometheus:
 
 ```bash
-controlplane Devops-Project-1/Day-08/Prometheus on  main ➜  helm install prometheus prometheus-community/prometheus \
+controlplane Devops-Project-1/Day-08/Part-1:Prometheus on  main ➜  helm install prometheus prometheus-community/prometheus \
   --namespace monitoring
 NAME: prometheus
 LAST DEPLOYED: Wed Jun 17 19:04:39 2026
@@ -78,7 +78,7 @@ After installation, the Node Exporter pod entered a `CreateContainerError` state
 Investigation:
 
 ```bash
-controlplane Devops-Project-1/Day-08/Prometheus on  main ➜  kubectl get pods -n monitoring
+controlplane Devops-Project-1/Day-08/Part-1:Prometheus on  main ➜  kubectl get pods -n monitoring
 NAME                                                 READY   STATUS                 RESTARTS   AGE
 prometheus-alertmanager-0                            0/1     Pending                0          23s
 prometheus-kube-state-metrics-75866fb88d-hxf4x       1/1     Running                0          23s
@@ -86,7 +86,7 @@ prometheus-prometheus-node-exporter-5sqfq            0/1     CreateContainerErro
 prometheus-prometheus-pushgateway-74b59b7bb9-krg7v   1/1     Running                0          23s
 prometheus-server-8cdc5469d-5tjnc                    0/2     Pending                0          23s
 
-controlplane Devops-Project-1/Day-08/Prometheus on  main ➜  kubectl describe pod prometheus-prometheus-node-exporter-5sqfq -n monitoring
+controlplane Devops-Project-1/Day-08/Part-1:Prometheus on  main ➜  kubectl describe pod prometheus-prometheus-node-exporter-5sqfq -n monitoring
 ...........
 Events:
   Type     Reason     Age               From               Message
@@ -119,7 +119,7 @@ This is a common limitation when running monitoring stacks inside nested contain
 
 ### Resolution for Issue #1:
 
-Node Exporter was disabled through Helm values in [prometheus-values.yaml](https://github.com/Janemils/Devops-Project-1/blob/main/Day-08/Prometheus/prometheus-values.yaml):
+Node Exporter was disabled through Helm values in [prometheus-values.yaml](https://github.com/Janemils/Devops-Project-1/blob/main/Day-08/Part-1%3APrometheus/prometheus-values.yaml):
 
 
 ```yaml
@@ -138,7 +138,7 @@ Following the Node Exporter fix, Alertmanager remained in a `Pending` state.
 Investigation:
 
 ```bash
-controlplane Devops-Project-1/Day-08/Prometheus on  main ➜ kubectl describe pod prometheus-alertmanager-0 -n monitoring
+controlplane Devops-Project-1/Day-08/Part-1:Prometheus on  main ➜ kubectl describe pod prometheus-alertmanager-0 -n monitoring
 .......
 Events:
   Type     Reason            Age    From               Message
@@ -160,7 +160,7 @@ Alertmanager attempted to create a PersistentVolumeClaim that could not be satis
 
 ### Resolution
 
-Persistent storage was disabled for Alertmanager in [prometheus-values.yaml](https://github.com/Janemils/Devops-Project-1/blob/main/Day-08/Prometheus/prometheus-values.yaml)::
+Persistent storage was disabled for Alertmanager in [prometheus-values.yaml](https://github.com/Janemils/Devops-Project-1/blob/main/Day-08/Part-1%3APrometheus/prometheus-values.yaml)::
 
 ```yaml
 alertmanager:
@@ -177,7 +177,7 @@ The Prometheus server pod also remained in a Pending state.
 Investigation:
 
 ```bash
-controlplane Devops-Project-1/Day-08/Prometheus on  main ➜  kubectl get pvc -n monitoring
+controlplane Devops-Project-1/Day-08/Part-1:Prometheus on  main ➜  kubectl get pvc -n monitoring
 NAME                                STATUS    VOLUME   CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
 prometheus-server                   Pending                                                     <unset>                 3m32s
 storage-prometheus-alertmanager-0   Pending                                                     <unset>                 3m32s
@@ -191,7 +191,7 @@ Similar to Alertmanager, Prometheus attempted to provision persistent storage th
 
 ### Resolution
 
-Persistent storage was disabled for the Prometheus server in [prometheus-values.yaml](https://github.com/Janemils/Devops-Project-1/blob/main/Day-08/Prometheus/prometheus-values.yaml)::
+Persistent storage was disabled for the Prometheus server in [prometheus-values.yaml](https://github.com/Janemils/Devops-Project-1/blob/main/Day-08/Part-1%3APrometheus/prometheus-values.yaml)::
 
 ```yaml
 server:
@@ -202,7 +202,7 @@ server:
 Prometheus was then upgraded:
 
 ```bash
-controlplane Devops-Project-1/Day-08/Prometheus on  main ➜  helm upgrade prometheus prometheus-community/prometheus \
+controlplane Devops-Project-1/Day-08/Part-1:Prometheus on  main ➜  helm upgrade prometheus prometheus-community/prometheus \
   -n monitoring \
   -f prometheus-values.yaml
 Release "prometheus" has been upgraded. Happy Helming!
@@ -249,17 +249,17 @@ Verify pods:
 
 ```bash
 # Verify if all the pods are up and running:
-controlplane Devops-Project-1/Day-08/Prometheus on  main ➜  kubectl get po -n monitoring
+controlplane Devops-Project-1/Day-08/Part-1:Prometheus on  main ➜  kubectl get po -n monitoring
 NAME                                                 READY   STATUS    RESTARTS   AGE
 prometheus-kube-state-metrics-75866fb88d-hxf4x       1/1     Running   0          4m56s
 prometheus-prometheus-pushgateway-74b59b7bb9-krg7v   1/1     Running   0          4m56s
-prometheus-server-7c4bf6db77-bv8gx                   1/2     Running   0          13s
+prometheus-server-7c4bf6db77-bv8gx                   2/2     Running   0          13s
 ```
 
 Verify services:
 
 ```bash
-controlplane Devops-Project-1/Day-08/Prometheus on  main ➜  kubectl get svc -n monitoring
+controlplane Devops-Project-1/Day-08/Part-1:Prometheus on  main ➜  kubectl get svc -n monitoring
 NAME                                TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
 prometheus-kube-state-metrics       ClusterIP   172.20.86.44     <none>        8080/TCP   6m24s
 prometheus-prometheus-pushgateway   ClusterIP   172.20.144.69    <none>        9091/TCP   6m24s
@@ -269,7 +269,7 @@ prometheus-server                   ClusterIP   172.20.214.195   <none>        8
 Verify endpoints:
 
 ```bash
-controlplane Devops-Project-1/Day-08/Prometheus on  main ✖ kubectl get endpoints -n monitoring
+controlplane Devops-Project-1/Day-08/Part-1:Prometheus on  main ✖ kubectl get endpoints -n monitoring
 Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
 NAME                                ENDPOINTS         AGE
 prometheus-kube-state-metrics       172.17.0.6:8080   6m44s
@@ -286,7 +286,7 @@ Prometheus was running successfully, but the UI returned a `502 Bad Gateway` err
 Initial port forwarding:
 
 ```bash
-controlplane Devops-Project-1/Day-08/Prometheus on  main ➜  kubectl port-forward svc/prometheus-server 9090:80 -n monitoring
+controlplane Devops-Project-1/Day-08/Part-1:Prometheus on  main ➜  kubectl port-forward svc/prometheus-server 9090:80 -n monitoring
 Forwarding from 127.0.0.1:9090 -> 9090
 Forwarding from [::1]:9090 -> 9090
 
@@ -319,7 +319,7 @@ The KodeKloud browser proxy cannot access ports that are exposed only on the loc
 The port-forward was restarted using:
 
 ```bash
-controlplane Devops-Project-1/Day-08/Prometheus on  main ➜  kubectl port-forward \
+controlplane Devops-Project-1/Day-08/Part-1:Prometheus on  main ➜  kubectl port-forward \
   --address 0.0.0.0 \
   svc/prometheus-server \
   9090:80 \
