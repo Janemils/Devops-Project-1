@@ -13,7 +13,7 @@ variable "namespace" {
 variable "image" {
   description = "Docker image for the FastAPI app"
   type        = string
-  default     = "janemils/janemils-app:fastapi-v4"
+  default     = "janemils/janemils-app:fastapi-v5"
 }
 
 variable "replicas" {
