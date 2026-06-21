@@ -51,19 +51,17 @@ def setup_metrics(app: FastAPI):
             status_code = 500
             raise
 
-        finally:
-            response = await call_next(request)  # Call the actual endpoint.
-            latency = time.time() - start_time
+        latency = time.time() - start_time
     
-            # Increment the request counter with HTTP method, path, and status code.
-            REQUEST_COUNT.labels(
-                request.method,
-                request.url.path,
-                response.status_code
-            ).inc()
+        # Increment the request counter with HTTP method, path, and status code.
+        REQUEST_COUNT.labels(
+            request.method,
+            request.url.path,
+            response.status_code
+        ).inc()
     
-            # Record the latency of this request in the histogram.
-            REQUEST_LATENCY.observe(latency)
+        # Record the latency of this request in the histogram.
+        REQUEST_LATENCY.observe(latency)
         return response
 
     @app.get("/metrics")
