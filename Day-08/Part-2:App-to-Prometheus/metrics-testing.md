@@ -85,9 +85,13 @@ Run:
 sum(rate(http_requests_total[5m]))
 ```
 
+```promql
+increase(http_requests_total[5m])
+```
+
 **Expected:**
 
-<img width="1000" height="316" alt="image" src="https://github.com/user-attachments/assets/955a8724-46db-4658-9056-a1a1b50f44cf" />
+<img width="1000" height="516" alt="image" src="https://github.com/user-attachments/assets/9e05a113-80a0-47de-a9de-23e4a77b0098" />
 <img width="1000" height="339" alt="image" src="https://github.com/user-attachments/assets/e511a615-b5d5-46c2-ac94-672f9444cc2e" />
 
 
@@ -98,7 +102,7 @@ if little or no traffic exists.
 ## Generate Traffic
 
 ```bash
-controlplane ~ ➜ for i in {1..500}; do
+controlplane ~ ➜ for i in {1..20}; do
   curl -s localhost:8000/hello > /dev/null
 done
 ```
@@ -107,9 +111,14 @@ done
 
 ## Observe
 
-<img width="1000" height="389" alt="image" src="https://github.com/user-attachments/assets/ff92e106-db6a-4c53-ab88-c31334396986" />
+<img width="1000" height="491" alt="image" src="https://github.com/user-attachments/assets/109cffcc-fd95-4abe-b326-6fc6a50d895f" />
 <img width="1000" height="407" alt="image" src="https://github.com/user-attachments/assets/eee482d6-99c8-4cef-932f-59a51e3d64a6" />
 
+If you notice, the /hello endpoint should ideally show only 105 as 85+20 is 105, but, it's showing 110, because it keeps counting probe requests too and as seen in our deployment:
+- /hello is called every 5 seconds by the kubelet
+- /health is called every 5 seconds by the kubelet
+
+So, by the time you refreshed Prometheus, another probe cycle would have likely happened.
 ---
 
 # Lab 3 — Endpoint Usage
