@@ -75,6 +75,21 @@ Forwarding from [::1]:3000 -> 3000
 ```
 
 Now, you can open http://localhost:3000 in your browser. You should see something similar to the screenshot below.
+<img width="1902" height="1150" alt="image" src="https://github.com/user-attachments/assets/e47d3131-03ae-4bd6-beea-262e265abcd0" />
+  
+
+If you see something like this, while accessing the grafana site in browser, just terminate the previous port-forward command and run the below command:
+<img width="1912" height="561" alt="image" src="https://github.com/user-attachments/assets/b6bbc8f1-ea70-463d-8aff-184e55cce263" />
+
+```bash
+controlplane Devops-Project-1/Day-08/Part-3:Grafana on  main ✖ kubectl port-forward \
+  --address 0.0.0.0 \
+  svc/grafana \
+  3000:80 \
+  -n monitoring
+Forwarding from 0.0.0.0:3000 -> 3000
+```
+
 
 Retrieve admin password:
 
@@ -96,29 +111,42 @@ Password: <retrieved password>
 
 # Step 3: Add Prometheus as Data Source
 
+Before you proceed with this step, ensure you've prometheus running .You can follow [part-1](https://github.com/Janemils/Devops-Project-1/blob/main/Day-08/Part-1%3APrometheus/README.md) to set this up. Ensure that the service is port-forwarded.
+
 Navigate to:
 
 ```text
 Connections → Data Sources → Add Data Source
 ```
-
+  
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/03c5e1f6-a8af-4ee0-b660-412ba67b7ff3" />
+  
 Select:
 
 ```text
 Prometheus
 ```
+  
+<img width="1871" height="622" alt="image" src="https://github.com/user-attachments/assets/34231369-e813-422b-a4a4-cf34adc64b76" />
+
 
 Configure URL:
 
 ```text
 http://prometheus-server.monitoring.svc.cluster.local
 ```
+  
+<img width="1917" height="1102" alt="image" src="https://github.com/user-attachments/assets/9f844f9f-bfa6-46ca-86e9-1425ee0ba49c" />
+
 
 Click:
 
 ```text
 Save & Test
 ```
+  
+<img width="1912" height="1146" alt="image" src="https://github.com/user-attachments/assets/ccd6fec4-203e-4252-a57c-6366139c47a4" />
+
 
 Expected:
 
@@ -131,6 +159,13 @@ Data source is working
 # Step 4: Initial Dashboard Validation
 
 Create a new dashboard.
+<img width="1822" height="1147" alt="image" src="https://github.com/user-attachments/assets/5fd3f1f0-ef6b-4680-9d8b-b41b39a59657" />
+  
+You can import the dashboard template and just change the db that you have setup.
+<img width="1907" height="895" alt="image" src="https://github.com/user-attachments/assets/374f9558-a1ee-4d75-8d84-10108df14c7e" />
+
+
+Or you can create your own dashboard.
 
 Add a panel.
 
