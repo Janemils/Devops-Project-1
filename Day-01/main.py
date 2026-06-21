@@ -2,6 +2,7 @@ import os
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from metrics import setup_metrics
+from fastapi import HTTPException
 
 app = FastAPI(title="DevOps Demo App")
 

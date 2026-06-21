@@ -49,6 +49,16 @@ def setup_metrics(app: FastAPI):
 
         except Exception:
             status_code = 500
+            
+            REQUEST_COUNT.labels(
+                request.method,
+                request.url.path,
+                str(status_code)
+            ).inc()
+
+            REQUEST_LATENCY.observe(
+                time.time() - start_time
+            )
             raise
 
         latency = time.time() - start_time

@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: janemils-app
-        image: janemils/janemils-app:fastapi-v5
+        image: janemils/janemils-app:fastapi-v6
         ports:
         - containerPort: 8000
 

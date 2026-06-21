@@ -161,7 +161,7 @@ Data source is working
 Create a new dashboard.
 <img width="1822" height="1147" alt="image" src="https://github.com/user-attachments/assets/5fd3f1f0-ef6b-4680-9d8b-b41b39a59657" />
   
-You can import the dashboard template and just change the db that you have setup.
+You can import the [dashboard template](https://github.com/Janemils/Devops-Project-1/blob/main/Day-08/Part-3%3AGrafana/FastAPI-App-Metrics-Grafana-Dashboard-Template.json) and just change the db that you have setup.
 <img width="1907" height="895" alt="image" src="https://github.com/user-attachments/assets/374f9558-a1ee-4d75-8d84-10108df14c7e" />
 
 
