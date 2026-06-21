@@ -59,7 +59,11 @@ Verify installation:
 ```bash
 controlplane Devops-Project-1/Day-08/Part-3:Grafana on  main [!?] ➜  kubectl get pods -n monitoring
 NAME                      READY   STATUS    RESTARTS   AGE
-grafana-85f74b946-6x889   1/1     Running   0          84s
+NAME                                                 READY   STATUS    RESTARTS   AGE
+grafana-7d9444cb95-kxzhv                             0/1     Running   0          27s
+prometheus-kube-state-metrics-75866fb88d-9fnr4       1/1     Running   0          84s
+prometheus-prometheus-pushgateway-74b59b7bb9-fnfm5   1/1     Running   0          84s
+prometheus-server-5b7cb6b8b7-t5q92                   2/2     Running   0          69s
 ```
   
 ---
@@ -164,10 +168,19 @@ Create a new dashboard.
 You can import the [dashboard template](https://github.com/Janemils/Devops-Project-1/blob/main/Day-08/Part-3%3AGrafana/FastAPI-App-Metrics-Grafana-Dashboard-Template.json) and just change the db that you have setup.
 <img width="1907" height="895" alt="image" src="https://github.com/user-attachments/assets/374f9558-a1ee-4d75-8d84-10108df14c7e" />
 
+If everything is successfully imported, you should be able to see a dashboard that looks like this with all the panels:
+<img width="1907" height="1056" alt="image" src="https://github.com/user-attachments/assets/db244d1d-3b07-4f0e-afd1-1f2c6f9b20c1" />
 
-Or you can create your own dashboard.
 
-Add a panel.
+Or you can create your own dashboard and add the panels.
+
+> [!TIP]
+> Also, another point to note:
+> Ensure that your prometheus-server configmap scrapes the application configs as shown in [part-2](https://github.com/Janemils/Devops-Project-1/blob/main/Day-08/Part-2%3AApp-to-Prometheus/README.md#step-4-configure-prometheus-scraping). Else, you'll not see any data in your dashboard as seen in the below screenshot:
+>  
+> <img width="1905" height="1071" alt="image" src="https://github.com/user-attachments/assets/683ba30c-afb7-4979-8128-8290a9465e57" />
+
+
 
 Query:
 
@@ -189,6 +202,8 @@ This confirms:
 ---
 
 # Step 5: Application Status Panel
+
+<img width="761" height="417" alt="image" src="https://github.com/user-attachments/assets/b2f115bf-d2a5-40dd-b0aa-fca5184e2768" />
 
 Query:
 
@@ -245,6 +260,8 @@ Expected:
 
 # Step 6: Request Rate Panel
 
+<img width="762" height="377" alt="image" src="https://github.com/user-attachments/assets/3bea5c25-6d97-4c70-aa3d-77c6c0930838" />
+
 Query:
 
 ```promql
@@ -283,6 +300,8 @@ How much traffic is reaching the application?
 
 # Step 7: Requests by Endpoint Panel
 
+<img width="741" height="360" alt="image" src="https://github.com/user-attachments/assets/76c35cdc-324c-4f37-a019-7ffc9c5a31f8" />
+
 Query:
 
 ```promql
@@ -316,7 +335,9 @@ Which API endpoints are most frequently used?
 
 ---
 
-# Step 8: HTTP Status Distribution Panel
+# Step 8: Request By Status Code.
+
+<img width="772" height="367" alt="image" src="https://github.com/user-attachments/assets/9909cd2f-f0dc-4ace-80e2-0c2d74fc6c10" />
 
 Query:
 
@@ -352,63 +373,9 @@ Are users encountering failures?
 
 ---
 
-# Step 9: Understanding Delayed Metric Updates
+# Step 9: Memory Usage Panel
 
-Observation:
-
-After generating traffic:
-
-```bash
-for i in {1..10}; do
-  curl -s localhost:8000/doesnotexist > /dev/null
-done
-```
-
-The metric did not update immediately.
-
-Investigation:
-
-```bash
-kubectl exec -it -n monitoring deploy/prometheus-server -- \
-grep scrape_interval /etc/config/prometheus.yml
-```
-
-Output:
-
-```yaml
-scrape_interval: 1m
-```
-
-Explanation:
-
-Prometheus uses a pull model.
-
-Flow:
-
-```text
-Request arrives
-↓
-Application updates metric
-↓
-Prometheus scrapes /metrics
-↓
-Prometheus stores new value
-↓
-Grafana displays update
-```
-
-Because scraping occurs every minute, metric changes may appear delayed.
-
-Key Lesson:
-
-```text
-Application metrics update instantly.
-Prometheus learns about them only during the next scrape.
-```
-
----
-
-# Step 10: Memory Usage Panel
+<img width="760" height="371" alt="image" src="https://github.com/user-attachments/assets/5407e6f0-cf83-45df-83dd-f53567eb686c" />
 
 Query:
 
@@ -442,7 +409,9 @@ Is the application leaking memory?
 
 ---
 
-# Step 11: CPU Usage Panel
+# Step 10: CPU Usage Panel
+
+<img width="722" height="351" alt="image" src="https://github.com/user-attachments/assets/2b342909-890e-4159-9293-733b424976a3" />
 
 Query:
 
@@ -482,21 +451,25 @@ Is the application under heavy load?
 
 ---
 
-# Step 12: Error Monitoring
+# Step 11: Error Monitoring
 
-Generate 404 traffic:
+<img width="731" height="382" alt="image" src="https://github.com/user-attachments/assets/4bba12fd-79d2-4dae-b71b-53d5e164b7cf" />
+
+Generate 500 traffic:
 
 ```bash
 for i in {1..20}; do
-  curl -s localhost:8000/doesnotexist > /dev/null
+  curl -s localhost:8000/error > /dev/null
 done
 ```
 
 Verify:
 
 ```promql
-http_requests_total{status="404"}
+sum by (endpoint) (http_requests_total{status=~"5.."})
 ```
+
+<img width="747" height="392" alt="image" src="https://github.com/user-attachments/assets/94d3e571-441c-40c2-b9d3-81bfda8e7ad2" />
 
 Observation:
 
