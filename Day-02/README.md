@@ -114,8 +114,8 @@ Your one-time device confirmation code is: .........
 
 ```bash
 # Tag your image that you want to push to your registry and push the image.
-admin@docker-host ➜  docker tag fastapi-api:latest_img janemils/janemils-app:fastapi-<version-number>
-admin@docker-host ➜  docker push janemils/janemils-app:fastapi-v1
+admin@docker-host ➜  docker tag fast-api:latest_img janemils/janemils-app:fastapi-<version-number>
+admin@docker-host ➜  docker push janemils/janemils-app:fastapi-<version-number>
 ```
   
 ## Validate, whether your image actually got pushed to the registry:
