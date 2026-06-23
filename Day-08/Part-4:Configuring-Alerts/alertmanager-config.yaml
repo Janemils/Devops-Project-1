@@ -1,27 +1,37 @@
-receivers:
-  - name: slack-notifications
-    slack_configs:
-      - api_url: 'YOUR_SLACK_WEBHOOK'
-        channel: 'YOUR_CHANNEL_NAME'
-        # example: 
-        # channel: "#my-channel"
-        send_resolved: true
-        title: >-
-          🚨 {{ .Status | toUpper }} - {{ range .Alerts }}{{ .Annotations.summary }}{{ end }}
-        text: >-
-          {{ range .Alerts }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: alertmanager-config
+  namespace: monitoring
+data:
+  alertmanager.yml: |
+    route:
+      receiver: slack-notifications
 
-          *🚨 Alert Name:* {{ .Labels.alertname }}
+    receivers:
+      - name: slack-notifications
+        slack_configs:
+          - api_url: 'YOUR_SLACK_WEBHOOK'
+            channel: 'YOUR_CHANNEL_NAME'
+            send_resolved: true
+            title: >-
+              🚨 {{ .Status | toUpper }} - {{ range .Alerts }}{{ .Annotations.summary }}{{ end }}
+            text: >-
+              {{ range .Alerts }}
 
-          *⚠️ Severity:* {{ .Labels.severity }}
+              *🚨 Alert Name:* {{ .Labels.alertname }}
 
-          *📦 Job:* {{ .Labels.job }}
+              *⚠️ Severity:* {{ .Labels.severity }}
 
-          *🖥️ Instance:* {{ .Labels.instance }}
-          
-          *📝 Description:* 
-          {{ .Annotations.description }}
-          
-          *⏰ Status:* {{ $.Status }}
-          ---
-          {{ end }}
+              *📦 Job:* {{ .Labels.job }}
+
+              *🖥️ Instance:* {{ .Labels.instance }}
+
+              *📝 Description:*
+              {{ .Annotations.description }}
+
+              *⏰ Status:* {{ $.Status }}
+
+              ---
+
+              {{ end }}
