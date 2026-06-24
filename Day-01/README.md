@@ -244,6 +244,15 @@ INFO:     127.0.0.1:51266 - "POST /recover HTTP/1.1" 200 OK
 INFO:     127.0.0.1:51280 - "GET /health HTTP/1.1" 200 OK
 ```
 
+# To manipulate an internal server error:
+```bash
+root@ubuntu-host ~ ➜  curl  http://localhost:8000/error
+{"details":"Internal Server Error"}
+
+# Application Logs:
+INFO:     127.0.0.1:59888 - "GET /error HTTP/1.1" 500 Internal Server Error
+```
+
 # To crash the application (i.e; just kill the process)
 ```bash
 root@ubuntu-host ~ ➜  curl -X POST http://localhost:8000/crash
