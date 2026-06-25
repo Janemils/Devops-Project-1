@@ -1,0 +1,36 @@
+groups:
+  - name: janemils-app-alerts
+    rules:
+
+      - alert: HighErrorRate
+        expr: |
+          sum(rate(http_requests_total{status="500"}[5m])) > 0.05
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High error rate detected"
+          description: |
+            More than 5% requests are returning HTTP 500.
+
+      - alert: PodRestartingFrequently
+        expr: |
+          increase(kube_pod_container_status_restarts_total[10m]) > 2
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Pod restarting frequently"
+          description: |
+            Pod restarted more than twice in 10 minutes.
+
+      - alert: AppDown
+        expr: |
+          up{job="janemils-app"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Application Down"
+          description: |
+            Prometheus cannot scrape janemils-app.
