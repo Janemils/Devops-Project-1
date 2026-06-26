@@ -1,402 +1,182 @@
-# Day 08 - Monitoring, Visualization & Alerting
+# Day 08 — Monitoring, Visualization & Alerting
 
 ## Overview
 
-This phase of the project focuses on implementing a complete observability stack for the FastAPI application.
+Day 08 introduces a complete observability stack for the FastAPI application deployed on Kubernetes.
 
-The goal is to monitor application health, visualize metrics, and notify administrators when critical issues occur.
+By the end of this phase, the application is capable of:
 
-The monitoring stack consists of:
+* Exposing application metrics
+* Collecting metrics with Prometheus
+* Visualizing metrics with Grafana
+* Detecting failures using Prometheus Alert Rules
+* Routing alerts through Alertmanager
+* Notifying engineers via Slack
 
-* Prometheus
-* Grafana
-* Alertmanager
-* Slack Notifications
+This mirrors the monitoring workflow used in modern cloud-native environments.
+
+---
+
+# Monitoring Stack
+
+| Component    | Responsibility               |
+| ------------ | ---------------------------- |
+| FastAPI      | Exposes application metrics  |
+| Prometheus   | Scrapes and stores metrics   |
+| Grafana      | Visualizes metrics           |
+| Alertmanager | Processes and routes alerts  |
+| Slack        | Receives alert notifications |
 
 ---
 
 # Architecture
 
 ```text
-                    ┌──────────────────┐
-                    │   FastAPI App    │
-                    └────────┬─────────┘
-                             │
-                             │ /metrics
-                             ▼
-                    ┌──────────────────┐
-                    │    Prometheus    │
-                    └────────┬─────────┘
-                             │
-                             │ Alert Rules
-                             ▼
-                    ┌──────────────────┐
-                    │   Alertmanager   │
-                    └────────┬─────────┘
-                             │
-                             │ Notifications
-                             ▼
-                    ┌──────────────────┐
-                    │      Slack       │
-                    └──────────────────┘
-
-
-                    ┌──────────────────┐
-                    │     Grafana      │
-                    └────────┬─────────┘
-                             ▲
-                             │
-                             │ Query Metrics
-                             │
-                    ┌──────────────────┐
-                    │    Prometheus    │
-                    └──────────────────┘
+                        +--------------------+
+                        |   FastAPI App      |
+                        +---------+----------+
+                                  |
+                                  | /metrics
+                                  |
+                                  v
+                        +--------------------+
+                        |    Prometheus      |
+                        +---------+----------+
+                                  |
+              +-------------------+-------------------+
+              |                                       |
+              |                                       |
+              v                                       v
+      +---------------+                     +------------------+
+      |   Grafana     |                     | Alertmanager     |
+      +---------------+                     +--------+---------+
+                                                     |
+                                                     |
+                                                     v
+                                              +-------------+
+                                              |   Slack     |
+                                              +-------------+
 ```
 
 ---
 
-# Components
-
-## FastAPI Application
-
-The application exposes:
-
-* Business endpoints
-* Health endpoints
-* Prometheus metrics endpoint
-
-Example:
+# Project Structure
 
 ```text
-/hello
-/health
-/error
-/metrics
+Day-08
+│
+├── Part-1: Prometheus
+│   ├── Install Prometheus
+│   ├── Configure scrape jobs
+│   └── Verify metric collection
+│
+├── Part-2: App to Prometheus
+│   ├── Instrument FastAPI
+│   ├── Expose /metrics
+│   └── Verify custom metrics
+│
+├── Part-3: Grafana
+│   ├── Connect Prometheus
+│   ├── Build dashboards
+│   └── Visualize application metrics
+│
+└── Part-4: Configuring Alerts
+    ├── Create alert rules
+    ├── Configure Alertmanager
+    ├── Integrate Slack
+    └── Test alert lifecycle
 ```
 
 ---
 
-## [Prometheus](https://github.com/Janemils/Devops-Project-1/tree/main/Day-08/Part-1%3APrometheus)
+# Metrics Monitored
 
-Prometheus is responsible for:
+The application exposes custom Prometheus metrics for:
 
-* Scraping application metrics
-* Storing time-series data
-* Evaluating alert rules
-
-Scrape target:
-
-```text
-http://janemils-app-deployment.default.svc.cluster.local:8000/metrics
-```
-
----
-
-## [Grafana](https://github.com/Janemils/Devops-Project-1/tree/main/Day-08/Part-3%3AGrafana)
-
-Grafana is used to:
-
-* Visualize Prometheus metrics
-* Build operational dashboards
-* Monitor application behavior in real-time
-
-Example dashboards:
-
-* Request Count
-* Error Rate
+* HTTP Request Count
+* HTTP Response Status Codes
 * Request Latency
 * Application Health
 
----
-
-## [Alertmanager](https://github.com/Janemils/Devops-Project-1/tree/main/Day-08/Part-4%3AConfiguring-Alerts)
-
-Alertmanager processes alerts generated by Prometheus.
-
-Responsibilities:
-
-* Receive alerts
-* Group alerts
-* Deduplicate alerts
-* Route alerts
-* Send notifications
-
-Notification Channel:
-
-```text
-Slack
-```
-
----
-
-# Metrics Collected
-
-## Request Counter
-
-Tracks total requests.
-
-Metric:
-
-```text
-http_requests_total
-```
-
-Labels:
-
-```text
-method
-endpoint
-status
-```
-
-Example:
-
-```text
-http_requests_total{
-  endpoint="/hello",
-  method="GET",
-  status="200"
-}
-```
-
----
-
-## Request Latency
-
-Tracks response time.
-
-Metric:
-
-```text
-http_request_latency_seconds
-```
-
-Type:
-
-```text
-Histogram
-```
-
-Used for:
-
-* Performance monitoring
-* Latency dashboards
-* Future SLO/SLA tracking
+These metrics are visualized through Grafana dashboards and evaluated by Prometheus alert rules.
 
 ---
 
 # Implemented Alerts
 
-## ApplicationDown
+| Alert           | Purpose                             | Severity |
+| --------------- | ----------------------------------- | -------- |
+| ApplicationDown | Detect application outages          | Critical |
+| HighErrorRate   | Detect excessive HTTP 500 responses | Warning  |
 
-Purpose:
-
-Detect application outages.
-
-Rule:
-
-```promql
-up{job="janemils-app"} == 0
-```
-
-Duration:
+Each alert follows the complete lifecycle:
 
 ```text
-1 minute
-```
-
-Severity:
-
-```text
-critical
-```
-
-Description:
-
-```text
-Application is unreachable.
+Inactive
+    ↓
+Pending
+    ↓
+Firing
+    ↓
+Resolved
 ```
 
 ---
 
-## HighErrorRate
+# Notification Flow
 
-Purpose:
-
-Detect excessive HTTP 500 responses.
-
-Rule:
-
-```promql
-increase(http_requests_total{status="500"}[5m]) > 5
-```
-
-Duration:
+When an alert fires:
 
 ```text
-1 minute
+FastAPI
+    ↓
+Prometheus Metrics
+    ↓
+Prometheus Alert Rule
+    ↓
+Alertmanager
+    ↓
+Slack Notification
 ```
 
-Severity:
-
-```text
-warning
-```
-
-Description:
-
-```text
-More than 5 HTTP 500 responses within 5 minutes.
-```
+Both **FIRING** and **RESOLVED** notifications are delivered automatically.
 
 ---
 
-# Alert Lifecycle
+# Skills Demonstrated
 
-```text
-Application Error
-       │
-       ▼
-Metric Updated
-       │
-       ▼
-Prometheus Scrapes Metrics
-       │
-       ▼
-Alert Rule Evaluated
-       │
-       ▼
-Pending State
-       │
-       ▼
-Condition Persists
-       │
-       ▼
-Firing State
-       │
-       ▼
-Alertmanager Receives Alert
-       │
-       ▼
-Slack Notification Sent
-```
+* Kubernetes Monitoring
+* Prometheus Configuration
+* Application Instrumentation
+* PromQL
+* Grafana Dashboard Creation
+* Alertmanager Configuration
+* Slack Integration
+* End-to-End Observability
 
 ---
 
-# Slack Integration
+# Future Enhancements
 
-Slack is used as the notification platform.
+Planned improvements for Version 2:
 
-Alerts are delivered to:
-
-```text
-YOUR_CHANNEL_NAME
-```
-
-Example notification:
-
-```text
-🚨 FIRING - High Error Rate
-
-Alert Name: HighErrorRate
-
-Severity: warning
-
-Job: janemils-app
-
-Description:
-More than 5 HTTP 500 responses in last 5 minutes
-```
-
----
-
-# Testing
-
-## Test ApplicationDown
-
-Scale the deployment to zero:
-
-```bash
-kubectl scale deployment janemils-app-deployment \
-  --replicas=0
-```
-
-Expected Result:
-
-```text
-ApplicationDown
-```
-
-Slack notification should be received.
-
-Restore deployment:
-
-```bash
-kubectl scale deployment janemils-app-deployment \
-  --replicas=1
-```
-
----
-
-## Test HighErrorRate
-
-Generate HTTP 500 errors:
-
-```bash
-for i in {1..20}
-do
-  curl http://localhost:8000/error
-done
-```
-
-Expected Result:
-
-```text
-HighErrorRate
-```
-
-Slack notification should be received.
-
----
-
-# Key Learnings
-
-* Exposing custom Prometheus metrics
-* Prometheus service discovery
-* Time-series monitoring
-* Grafana dashboard creation
-* Prometheus alerting rules
-* Alertmanager routing
-* Slack notification integration
-* Kubernetes observability fundamentals
-
----
-
-# Future Improvements
-
-Planned Version 2 enhancements:
-
-* Ingress Controller
-* TLS/HTTPS
+* NGINX Ingress Controller
+* TLS / HTTPS
 * GitOps with ArgoCD
-* Terraform Infrastructure
-* Multi-Environment Deployments
-* SLO/SLA Dashboards
+* Terraform-managed Infrastructure
 * Kubernetes Resource Monitoring
-* Node Exporter Integration
-* Blackbox Monitoring
+* Node Exporter
+* Blackbox Exporter
+* Service Level Objective (SLO) Dashboards
+* Multi-environment Deployments
 
 ---
 
-# Outcome
+# Related Documentation
 
-The application is now fully observable.
+Each implementation is documented separately:
 
-The platform can:
-
-* Monitor application behavior
-* Visualize metrics
-* Detect failures
-* Notify operators automatically
-
-This setup closely mirrors the monitoring and alerting workflow used in modern cloud-native production environments.
+* [**Part-1:** Prometheus Installation & Configuration.](https://github.com/Janemils/Devops-Project-1/tree/main/Day-08/Part-1%3APrometheus)
+* [**Part-2:** Instrumenting the FastAPI Application.](https://github.com/Janemils/Devops-Project-1/tree/main/Day-08/Part-2%3AApp-to-Prometheus)
+* [**Part-3:** Grafana Dashboards.](https://github.com/Janemils/Devops-Project-1/tree/main/Day-08/Part-2%3AApp-to-Prometheus)
+* [**Part-4:** Alert Rules, Alertmanager & Slack Notifications.](https://github.com/Janemils/Devops-Project-1/tree/main/Day-08/Part-4%3AConfiguring-Alerts)
