@@ -44,8 +44,20 @@ The following parts must already be completed:
 Verify:
 
 ```bash
-kubectl get pods
-kubectl get svc
+controlplane Devops-Project-1/Day-08/Part-4:Configuring-Alerts on  main ➜ kubectl get pods -n monitoring
+NAME                                                 READY   STATUS    RESTARTS         AGE
+grafana-76777755bb-9sbql                             1/1     Running   5 (4h17m ago)    46h
+prometheus-kube-state-metrics-7656c476c8-pbl5t       1/1     Running   10 (4h16m ago)   46h
+prometheus-prometheus-pushgateway-6c7fc5c98c-pwxqj   1/1     Running   5 (4h17m ago)    46h
+prometheus-server-554bfd68f5-svlzv                   2/2     Running   4 (4h17m ago)    22h
+
+controlplane Devops-Project-1/Day-08/Part-4:Configuring-Alerts on  main ➜ kubectl get svc -n monitoring
+NAME                                TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+grafana                             ClusterIP   10.96.81.160    <none>        80/TCP     47h
+prometheus-kube-state-metrics       ClusterIP   10.96.15.202    <none>        8080/TCP   47h
+prometheus-prometheus-pushgateway   ClusterIP   10.96.250.103   <none>        9091/TCP   47h
+prometheus-server                   ClusterIP   10.96.12.216    <none>        80/TCP     47h
+
 ```
 
 Ensure:
@@ -58,7 +70,7 @@ Ensure:
 
 # Step 1: Create Alert Rules
 
-Create a file named:
+Create a file named: (or you can use the one that is there in this folder: [alerts.yaml](https://github.com/Janemils/Devops-Project-1/blob/main/Day-08/Part-4%3AConfiguring-Alerts/alerts.yaml)
 
 ```text
 alerts.yaml
@@ -160,7 +172,16 @@ Apply the updated ConfigMap.
 Restart Prometheus:
 
 ```bash
-kubectl rollout restart deployment prometheus-server -n monitoring
+controlplane Devops-Project-1/Day-08/Part-4:Configuring-Alerts on  main ➜ kubectl rollout restart deployment prometheus-server -n monitoring
+deployment.apps/prometheus-server restarted
+
+controlplane Devops-Project-1/Day-08/Part-4:Configuring-Alerts on  main ➜ kubectl get pods -n monitoring
+NAME                                                 READY   STATUS    RESTARTS         AGE
+grafana-76777755bb-9sbql                             1/1     Running   5 (4h23m ago)    46h
+prometheus-kube-state-metrics-7656c476c8-pbl5t       1/1     Running   10 (4h22m ago)   46h
+prometheus-prometheus-pushgateway-6c7fc5c98c-pwxqj   1/1     Running   5 (4h23m ago)    46h
+prometheus-server-6f4bb976c4-glj2r                   2/2     Running   0                2m57s
+
 ```
 
 ---
@@ -170,7 +191,12 @@ kubectl rollout restart deployment prometheus-server -n monitoring
 Port-forward Prometheus:
 
 ```bash
-kubectl port-forward svc/prometheus-server 9090:80 -n monitoring
+
+controlplane Devops-Project-1/Day-08/Part-4:Configuring-Alerts on  main ➜ kubectl port-forward svc/prometheus-server 9090:80 -n monitoring
+Forwarding from 127.0.0.1:9090 -> 9090
+Forwarding from [::1]:9090 -> 9090
+Handling connection for 9090
+
 ```
 
 Open:
@@ -181,13 +207,8 @@ http://localhost:9090/rules
 
 Expected:
 
-```text
-janemils-app-alerts
+<img width="1852" height="868" alt="Screenshot from 2026-06-26 23-10-21" src="https://github.com/user-attachments/assets/55dd3a87-8cce-4baa-aa6c-251839ce0496" />
 
-ApplicationDown
-
-HighErrorRate
-```
 
 ---
 
@@ -221,6 +242,8 @@ Expected:
 
 or a positive value if errors were generated.
 
+<img width="1852" height="868" alt="Screenshot from 2026-06-26 23-15-03" src="https://github.com/user-attachments/assets/2e5afff7-2981-4710-9e24-98deae9239e0" />
+
 ---
 
 # Step 5: Trigger HighErrorRate
@@ -228,9 +251,8 @@ or a positive value if errors were generated.
 Generate application errors:
 
 ```bash
-for i in {1..20}
-do
-  curl -s http://localhost:8000/error > /dev/null
+for i in {1..20}; do
+  curl http://localhost:8000/error
 done
 ```
 
@@ -290,36 +312,73 @@ Condition remained true for the configured duration.
 
 Alert is sent to Alertmanager.
 
+# 6.1: Let's observe for HighErrorRate:
+
+Inactive state for HighErrorRate Alert:
+<img width="1855" height="871" alt="No-Alerts-Triggered" src="https://github.com/user-attachments/assets/04d3c313-7876-49af-8d83-3cf72980a8ee" />
+  
+
+Pending state for HighErrorRate Alert:
+<img width="1858" height="732" alt="High-Error-Rate-Pending" src="https://github.com/user-attachments/assets/ad1dbe87-ffff-4032-9405-0ada697f47f5" />
+
+
+Firing state for HighErrorRate Alert:
+<img width="1858" height="732" alt="High-Error-Rate-Firing" src="https://github.com/user-attachments/assets/b3678e51-3cd2-46bf-b2db-464709349caf" />
+
+
+# 6.2: Let's observe for ApplicationDown:
+
+Inactive state for ApplicationDown Alert:
+<img width="1855" height="871" alt="No-Alerts-Triggered" src="https://github.com/user-attachments/assets/6c5229cf-7718-4acd-bb32-e62a344bf40e" />
+  
+
+Pending state for ApplicationDown Alert:
+<img width="1855" height="871" alt="Application-Down-Pending" src="https://github.com/user-attachments/assets/033b26e2-07d7-4431-a494-56d245d9b9cb" />
+
+
+Firing state for ApplicationDown Alert:
+<img width="1855" height="871" alt="Application-Down-Firing" src="https://github.com/user-attachments/assets/03c19aa2-599e-4844-b06c-9bbe0e2963e6" />
+
+
 ---
 
 # Step 7: Install Alertmanager
 
-Deploy Alertmanager inside the monitoring namespace.
+Deploy [Alertmanager app](https://github.com/Janemils/Devops-Project-1/blob/main/Day-08/Part-4%3AConfiguring-Alerts/alertmanager-deployment.yaml) and it's respective [service](https://github.com/Janemils/Devops-Project-1/blob/main/Day-08/Part-4%3AConfiguring-Alerts/alertmanager-service.yaml) inside the monitoring namespace.
+
+```bash
+controlplane Devops-Project-1/Day-08/Part-4:Configuring-Alerts on  main ➜   kubectl apply -f alertmanager-deployment.yaml 
+deployment.apps/alertmanager created
+
+controlplane Devops-Project-1/Day-08/Part-4:Configuring-Alerts on  main ➜   kubectl apply -f alertmanager-service.yaml 
+service/alertmanager created
+```
 
 Verify:
 
 ```bash
-kubectl get deploy -n monitoring
-kubectl get svc -n monitoring
-```
+controlplane Devops-Project-1/Day-08/Part-4:Configuring-Alerts on  main ➜ kubectl get deploy -n monitoring
+NAME                                READY   UP-TO-DATE   AVAILABLE   AGE
+alertmanager                        1/1     1            1           47h
+grafana                             1/1     1            1           47h
+prometheus-kube-state-metrics       1/1     1            1           47h
+prometheus-prometheus-pushgateway   1/1     1            1           47h
+prometheus-server                   1/1     1            1           47h
+controlplane Devops-Project-1/Day-08/Part-4:Configuring-Alerts on  main ➜  kubectl get svc -n monitoring
+NAME                                TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+alertmanager                        ClusterIP   10.96.219.65    <none>        9093/TCP   47h
+grafana                             ClusterIP   10.96.81.160    <none>        80/TCP     47h
+prometheus-kube-state-metrics       ClusterIP   10.96.15.202    <none>        8080/TCP   47h
+prometheus-prometheus-pushgateway   ClusterIP   10.96.250.103   <none>        9091/TCP   47h
+prometheus-server                   ClusterIP   10.96.12.216    <none>        80/TCP     47h
 
-Expected:
-
-```text
-alertmanager
-```
-
-service on:
-
-```text
-9093
 ```
 
 ---
 
 # Step 8: Connect Prometheus to Alertmanager
 
-Inside Prometheus configuration:
+Inside Prometheus configuration (configmap):
 
 ```yaml
 alerting:
@@ -329,10 +388,22 @@ alerting:
             - alertmanager.monitoring.svc.cluster.local:9093
 ```
 
+Your configmap should look something like this:
+
+<img width="1855" height="871" alt="Config-Map-Changes-For-Alerts" src="https://github.com/user-attachments/assets/15f0a540-f99a-46c2-b86a-664fd9b09b61" />
+  
 Restart Prometheus:
 
 ```bash
-kubectl rollout restart deployment prometheus-server -n monitoring
+controlplane Devops-Project-1/Day-08/Part-4:Configuring-Alerts on  main ➜ kubectl rollout restart deployment prometheus-server -n monitoring
+deployment.apps/prometheus-server restarted
+
+controlplane Devops-Project-1/Day-08/Part-4:Configuring-Alerts on  main ➜ kubectl get pods -n monitoring
+NAME                                                 READY   STATUS    RESTARTS         AGE
+grafana-76777755bb-9sbql                             1/1     Running   5 (4h23m ago)    46h
+prometheus-kube-state-metrics-7656c476c8-pbl5t       1/1     Running   10 (4h22m ago)   46h
+prometheus-prometheus-pushgateway-6c7fc5c98c-pwxqj   1/1     Running   5 (4h23m ago)    46h
+prometheus-server-6f4bb976c4-glj2r                   2/2     Running   0                2m57s
 ```
 
 ---
@@ -342,7 +413,9 @@ kubectl rollout restart deployment prometheus-server -n monitoring
 Port-forward:
 
 ```bash
-kubectl port-forward svc/alertmanager 9093:9093 -n monitoring
+controlplane Devops-Project-1/Day-08/Part-4:Configuring-Alerts on  main ➜  kubectl port-forward svc/alertmanager 9093:9093 -n monitoring
+Forwarding from 127.0.0.1:9093 -> 9093
+Forwarding from [::1]:9093 -> 9093
 ```
 
 Open:
@@ -351,13 +424,18 @@ Open:
 http://localhost:9093
 ```
 
+<img width="1852" height="868" alt="Screenshot from 2026-06-26 23-35-19" src="https://github.com/user-attachments/assets/39483ca1-1a5f-4378-8b77-b7d700339d58" />
+  
 When an alert is firing, it should appear inside Alertmanager.
+<img width="1852" height="868" alt="image" src="https://github.com/user-attachments/assets/a994784c-24ce-4231-8976-badbd776594a" />
+<img width="1852" height="868" alt="image" src="https://github.com/user-attachments/assets/2a50461b-6be5-4c56-92e1-27a21d9bf02e" />
+  
 
 ---
 
 # Step 10: Configure Slack Notifications
 
-Create a Slack Incoming Webhook.
+Create a [Slack Incoming Webhook](https://github.com/Janemils/Devops-Project-1/blob/main/Day-08/Part-4%3AConfiguring-Alerts/Setup-Slack.md).
 
 Store the webhook URL.
 
@@ -379,10 +457,17 @@ receivers:
     send_resolved: true
 ```
 
-Apply configuration.
+Apply configuration and restart Alertmanager.
 
-Restart Alertmanager.
+```bash
+controlplane Devops-Project-1/Day-08/Part-4:Configuring-Alerts on  main ➜  kubectl apply -f alertmanager-config.yaml 
+configmap/alertmanager-config created
 
+controlplane Devops-Project-1/Day-08/Part-4:Configuring-Alerts on  main ➜ kubectl rollout restart deployment alertmanager -n monitoring
+deployment.apps/alertmanager restarted
+
+```
+  
 ---
 
 # Step 11: Improve Slack Message Formatting
