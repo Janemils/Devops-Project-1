@@ -1,25 +1,41 @@
 apiVersion: apps/v1
 kind: Deployment
+
 metadata:
+  # Name of the Kubernetes Deployment resource.
   name: janemils-app-deployment
   labels:
+    # Label used to identify this application.
     app: janemils-app
+
 spec:
+  # Number of application instances (Pods) to run.
   replicas: 1
+
+  # Matches Pods managed by this Deployment.
   selector:
     matchLabels:
       app: janemils-app
+
+  # Template used to create new Pods.
   template:
     metadata:
       labels:
+        # Pod label must match the Deployment selector.
         app: janemils-app
+
     spec:
       containers:
       - name: janemils-app
+
+        # Docker image pulled from Docker Hub.
         image: janemils/janemils-app:fastapi-v6
+
         ports:
+        # Application listens on port 8000 inside the container.
         - containerPort: 8000
 
+        # Determines when the Pod is ready to receive traffic.
         readinessProbe:
           httpGet:
             path: /health
@@ -29,6 +45,7 @@ spec:
           timeoutSeconds: 2
           failureThreshold: 3
 
+        # Restarts the container if the application becomes unresponsive.
         livenessProbe:
           httpGet:
             path: /hello
