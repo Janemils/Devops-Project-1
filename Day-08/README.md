@@ -1,4 +1,4 @@
-# Day 08 — Monitoring, Visualization & Alerting
+# Day 08 - Monitoring, Visualization & Alerting
 
 ## Overview
 

@@ -1,4 +1,4 @@
-# Day 04 — Local Terraform Kubernetes Setup
+# Day 04 - Local Terraform Kubernetes Setup
 
 ## Overview  
 

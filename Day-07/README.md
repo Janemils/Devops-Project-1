@@ -1,4 +1,4 @@
-# Security & Vulnerability Management
+# Day-07: Security & Vulnerability Management
 
 Security is a continuous process that helps identify vulnerabilities, prevent credential leaks, and enforce controls before software reaches production.
 

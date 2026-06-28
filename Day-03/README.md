@@ -1,6 +1,6 @@
-# Day 03 — Kubernetes Deployment: FastAPI App with Readiness & Liveness Probes
+# Day 03 - Kubernetes Deployment: FastAPI App with Readiness & Liveness Probes
 
-This project demonstrates deploying a simple **FastAPI app** on **local Kubernetes** with **readiness** and **liveness probes**. The focus is on container orchestration, health management, and self-healing in Kubernetes — essential DevOps skills for production-ready deployments.
+This project demonstrates deploying a simple **FastAPI app** on **local Kubernetes** with **readiness** and **liveness probes**. The focus is on container orchestration, health management, and self-healing in Kubernetes - essential DevOps skills for production-ready deployments.
 
 ---
 
@@ -8,26 +8,26 @@ This project demonstrates deploying a simple **FastAPI app** on **local Kubernet
 
 The FastAPI app includes (Have added 3 new metrics: `/fail`. `/recover` and `/crash` [Day01](https://github.com/Janemils/Devops-Project-1/blob/main/Day-01/main.py])):
 
-- `/health` → Health check endpoint (used by readiness probe)
-- `/hello` → Demo endpoint (used by liveness probe)
-- `/fail` → Temporarily fail the readiness probe
-- `/recover` → Restore readiness probe to healthy state
-- `/crash` → Kill the process to trigger liveness probe restart
+- `/health` → Health check endpoint (used by readiness probe).
+- `/hello` → Demo endpoint (used by liveness probe).
+- `/fail` → Temporarily fail the readiness probe.
+- `/recover` → Restore readiness probe to healthy state.
+- `/crash` → Kill the process to trigger liveness probe restart.
 
 **Key Features Implemented in Day 03:**
 
-1. Kubernetes Deployment of a Dockerized FastAPI app
-2. **Readiness probe** — determines if the pod is ready to serve traffic
-3. **Liveness probe** — automatically restarts the pod if it becomes unhealthy
-4. Manual testing of probe behaviors to simulate real-world scenarios
+1. Kubernetes Deployment of a Dockerized FastAPI app.
+2. **Readiness probe** - determines if the pod is ready to serve traffic.
+3. **Liveness probe** - automatically restarts the pod if it becomes unhealthy.
+4. Manual testing of probe behaviors to simulate real-world scenarios.
 
 ---
 
 ## Prerequisites
 
-- Kubernetes cluster (local using `kind`, `minikube`, `k3s` or [kodekloud sandbox playground](https://kodekloud.com/playgrounds/playground-kubernetes-single-node-latest?_gl=1*qy56q*_gcl_au*ODYwODgwNDYwLjE3NzAzODgxNjEuNjA1MzA3MzQ4LjE3NzMyMDk5MTUuMTc3MzIwOTkyMg..*_ga*NTYwODA5OTcyLjE3MjYzNDY0MDg.*_ga_GNM9S6ZZKN*czE3NzM0NzU0MDEkbzMyMSRnMSR0MTc3MzQ3NTQxMiRqNDkkbDAkaDIzMTQ5MjI3*_ga_CGG6CZZ99B*czE3NzM0NzU0MDEkbzE0OCRnMSR0MTc3MzQ3NTQxMiRqNDkkbDAkaDQ5NDE2NzI4NQ..*_ga_T25WYDKNNV*czE3NzM0NzU0MDIkbzMzJGcxJHQxNzczNDc1NDEyJGo1MCRsMCRoMTM2Mjk0ODkxNQ..))
-- kubectl CLI installed and configured
-- FastAPI app container image built and pushed to Docker Hub (`janemils/janemils-app:fastapi-v3`)
+- Kubernetes cluster (local using `kind`, `minikube`, `k3s` or [kodekloud sandbox playground](https://kodekloud.com/playgrounds/playground-kubernetes-single-node-latest?_gl=1*qy56q*_gcl_au*ODYwODgwNDYwLjE3NzAzODgxNjEuNjA1MzA3MzQ4LjE3NzMyMDk5MTUuMTc3MzIwOTkyMg..*_ga*NTYwODA5OTcyLjE3MjYzNDY0MDg.*_ga_GNM9S6ZZKN*czE3NzM0NzU0MDEkbzMyMSRnMSR0MTc3MzQ3NTQxMiRqNDkkbDAkaDIzMTQ5MjI3*_ga_CGG6CZZ99B*czE3NzM0NzU0MDEkbzE0OCRnMSR0MTc3MzQ3NTQxMiRqNDkkbDAkaDQ5NDE2NzI4NQ..*_ga_T25WYDKNNV*czE3NzM0NzU0MDIkbzMzJGcxJHQxNzczNDc1NDEyJGo1MCRsMCRoMTM2Mjk0ODkxNQ..)).
+- kubectl CLI installed and configured.
+- FastAPI app container image built and pushed to Docker Hub (`janemils/janemils-app:fastapi-v3`).
 
 ---
 

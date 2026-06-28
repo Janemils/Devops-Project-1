@@ -1,4 +1,4 @@
-# CI/CD Evolution: From Push-Based to GitOps:
+# Day-05: CI/CD Evolution: From Push-Based to GitOps:
 
 ## Current Architecture (GitOps with ArgoCD):
 
