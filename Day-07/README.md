@@ -249,7 +249,7 @@ no leaks found
 
 # Part 3: Security Gates in CI/CD
 
-After validating Grype and Gitleaks locally, both tools were integrated into the GitHub Actions workflow to automate security checks during CI.
+After validating Grype and Gitleaks locally, both tools were integrated into the GitHub Actions workflow to automate security checks during CI.[Link for the CI Pipeline](https://github.com/Janemils/Devops-Project-1/actions/workflows/ci.yaml).
 
 ---
 
