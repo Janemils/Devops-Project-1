@@ -72,7 +72,7 @@ this project is for you.
 - Readiness Probes
 - Liveness Probes
 
-## Infrastructure as Code
+## Local Terraform Kubernetes Setup
 
 - Terraform
 - Kubernetes Provider
@@ -120,7 +120,7 @@ this project is for you.
 | [Day-01](https://github.com/Janemils/Devops-Project-1/tree/main/Day-01) | FastAPI Application |
 | [Day-02](https://github.com/Janemils/Devops-Project-1/tree/main/Day-02) | Docker Containerization |
 | [Day-03](https://github.com/Janemils/Devops-Project-1/tree/main/Day-03) | Kubernetes Deployment |
-| [Day-04](https://github.com/Janemils/Devops-Project-1/tree/main/Day-04) | Terraform (Infrastructure as Code) |
+| [Day-04](https://github.com/Janemils/Devops-Project-1/tree/main/Day-04) | Local Terraform Kubernetes Setup |
 | [Day-05](https://github.com/Janemils/Devops-Project-1/tree/main/Day-05) | GitOps with ArgoCD |
 | [Day-06](https://github.com/Janemils/Devops-Project-1/tree/main/Day-06) | Continuous Integration with GitHub Actions |
 | [Day-07](https://github.com/Janemils/Devops-Project-1/tree/main/Day-07) | DevSecOps with Grype |
@@ -222,7 +222,7 @@ Containerization
 Kubernetes
       │
       ▼
-Infrastructure as Code
+Local Terraform Kubernetes Setup
       │
       ▼
 GitOps

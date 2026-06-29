@@ -14,9 +14,6 @@ spec:
       labels:
         app: janemils-app
     spec:
-      # ----- Pull secrets for now as long as repo is private. Can remove this, once it's public. ------- #
-      imagePullSecrets:
-        - name: secret-repo-deploy
       containers:
       - name: janemils-app
         # ---- Image will be overwritten to the latest from the CI pipeline. ----
