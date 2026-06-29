@@ -1,159 +1,295 @@
 # From Code to Production: A Practical DevOps Journey
 
-*A hands-on project documenting how a simple application evolves into a production-ready platform through containerization, Kubernetes, Infrastructure as Code, GitOps, CI/CD, security, and observability.*
+*A hands-on project documenting how a simple FastAPI application evolves into a modern DevOps platform through containerization, Kubernetes, Infrastructure as Code, GitOps, CI/CD, security, observability, and networking.*
+
+<img width="1100" height="733" alt="image" src="https://github.com/user-attachments/assets/71ae306e-f30f-4c48-a6a1-dc2ded5acfd3" />
 
 ---
 
-## Why This Project Exists
+# Why This Project Exists
 
-When learning DevOps, many tutorials focus on individual tools:
+When learning DevOps, most tutorials focus on **individual tools**.
 
-* Docker tutorials
-* Kubernetes tutorials
-* Terraform tutorials
-* GitHub Actions tutorials
+- Docker tutorials
+- Kubernetes tutorials
+- Terraform tutorials
+- GitHub Actions tutorials
+- ArgoCD tutorials
+- Prometheus tutorials
 
-While useful, they often fail to show how these tools work together in a real deployment workflow.
+Each tutorial teaches *how* to use a tool.
 
-This project was created to bridge that gap.
+Very few explain **why the tool exists** or **how it fits into the bigger picture**.
 
-Starting with a minimal FastAPI application, each phase introduces a new DevOps concept and demonstrates how modern engineering teams build, deploy, secure, and operate applications in production environments.
+I built this project because I wanted to answer one simple question:
 
-The goal is not application development.
+> **"How does an application actually travel from a developer's laptop to production?"**
 
-The goal is understanding the complete DevOps lifecycle.
+Instead of learning tools in isolation, this repository documents one continuous journey where every stage naturally introduces the next engineering problem to solve.
+
+The goal isn't to build a complex application.
+
+The goal is to understand the complete DevOps lifecycle.
 
 ---
 
-## Who This Project Is For
+# Who This Project Is For
 
 This project is intended for:
 
-* Students learning DevOps.
-* Software engineers transitioning into DevOps roles.
-* Platform Engineering beginners.
-* Cloud and Kubernetes enthusiasts.
-* Anyone wanting practical GitOps experience.
+- Students learning DevOps
+- Software Test Engineers transitioning into DevOps
+- Platform Engineering beginners
+- Cloud & Kubernetes enthusiasts
+- Anyone who understands individual tools but struggles to connect them into one complete workflow
 
-If you're comfortable writing a simple application but unsure how that application eventually reaches production, this project is designed to show that journey step-by-step.
+If you've ever finished a Kubernetes tutorial and wondered,
 
----
+> *"Okay... what happens next?"*
 
-## What You'll Learn
-
-By following this project, you'll gain hands-on experience with:
-
-### Application Development
-
-* FastAPI
-* Health checks
-* Prometheus metrics
-
-### Containerization
-
-* Docker
-* Multi-stage builds
-* Image optimization
-
-### Kubernetes
-
-* Deployments
-* Services
-* Readiness probes
-* Liveness probes
-
-### Infrastructure as Code
-
-* Terraform
-* Kubernetes provider
-* Resource management
-  
-### Continuous Delivery (CD)
-
-* ArgoCD
-* GitOps deployments
-* Desired state management
-* Continuous reconciliation
-
-### Continuous Integration (CI)
-
-* GitHub Actions
-* Container image publishing
-* Automated build workflows
-* Manifest updates
+this project is for you.
 
 ---
 
-## Project Evolution
+# What You'll Learn
 
-| Day     | Topic                               |
-| ------- | ----------------------------------- |
-| [Day 01](https://github.com/Janemils/Devops-Project-1/tree/main/Day-01)  | FastAPI Application & Metrics.       |
-| [Day 02](https://github.com/Janemils/Devops-Project-1/tree/main/Day-02)  | Docker Containerization.             |
-| [Day 03](https://github.com/Janemils/Devops-Project-1/tree/main/Day-03)  | Kubernetes Deployment.               |
-| [Day 04](https://github.com/Janemils/Devops-Project-1/tree/main/Day-04)  | Terraform (Infrastructure as Code).  |
-| [Day 05](https://github.com/Janemils/Devops-Project-1/tree/main/Day-05)  | GitOps with ArgoCD.                  |
-| [Day 06](https://github.com/Janemils/Devops-Project-1/tree/main/Day-06)  | CI with GitHub Actions.              |
+## Application Development
+
+- FastAPI
+- Health endpoints
+- Prometheus metrics
+
+## Containerization
+
+- Docker
+- Multi-stage builds
+- Image optimization
+
+## Kubernetes
+
+- Deployments
+- Services
+- Readiness Probes
+- Liveness Probes
+
+## Infrastructure as Code
+
+- Terraform
+- Kubernetes Provider
+- Declarative resource management
+
+## GitOps
+
+- ArgoCD
+- Desired State Management
+- Continuous Reconciliation
+- Automated Sync
+
+## Continuous Integration
+
+- GitHub Actions
+- Automated Docker Builds
+- GitHub Container Registry (GHCR)
+- Manifest Updates
+
+## DevSecOps
+
+- Container vulnerability scanning
+- Grype
+- Shift-left security
+
+## Monitoring & Observability
+
+- Prometheus
+- Grafana
+- Alertmanager
+- Slack Notifications
+
+## Networking
+
+- NGINX Ingress Controller
+- Host-based Routing
+- Kubernetes Ingress
 
 ---
 
-## Architecture (Current)
+# Project Evolution
+
+| Day | Topic |
+|------|-------|
+| [Day-01](https://github.com/Janemils/Devops-Project-1/tree/main/Day-01) | FastAPI Application |
+| [Day-02](https://github.com/Janemils/Devops-Project-1/tree/main/Day-02) | Docker Containerization |
+| [Day-03](https://github.com/Janemils/Devops-Project-1/tree/main/Day-03) | Kubernetes Deployment |
+| [Day-04](https://github.com/Janemils/Devops-Project-1/tree/main/Day-04) | Terraform (Infrastructure as Code) |
+| [Day-05](https://github.com/Janemils/Devops-Project-1/tree/main/Day-05) | GitOps with ArgoCD |
+| [Day-06](https://github.com/Janemils/Devops-Project-1/tree/main/Day-06) | Continuous Integration with GitHub Actions |
+| [Day-07](https://github.com/Janemils/Devops-Project-1/tree/main/Day-07) | DevSecOps with Grype |
+| [Day-08](https://github.com/Janemils/Devops-Project-1/tree/main/Day-08) | Monitoring, Observability & Alerting |
+| [Day-09](https://github.com/Janemils/Devops-Project-1/tree/main/Day-09) | Ingress & External Access |
+
+---
+
+# Current Architecture
 
 ```text
-Developer
-    ↓
-GitHub Repository
-    ↓
-GitHub Actions
-    ↓
-GitHub Container Registry (GHCR)
-    ↓
-Update Kubernetes Manifest
-    ↓
-ArgoCD
-    ↓
-Kubernetes Cluster
-    ↓
-FastAPI Application
+                    Developer
+                        │
+                        ▼
+                 GitHub Repository
+                        │
+        ┌───────────────┴───────────────┐
+        ▼                               │
+ GitHub Actions (CI)                    │
+        │                               │
+        ▼                               │
+ GitHub Container Registry (GHCR)       │
+        │                               │
+        └────────── Updates Deployment Manifest
+                        │
+                        ▼
+                     ArgoCD
+                        │
+                        ▼
+                Kubernetes Cluster
+                        │
+        ┌───────────────┼─────────────────────────┐
+        ▼               ▼                         ▼
+    FastAPI App     Prometheus               Grafana
+        │               │                         │
+        │               ▼                         ▼
+        │          Alertmanager ─────► Slack Alerts
+        │
+        ▼
+NGINX Ingress Controller
+        │
+        ▼
+      Users
 ```
 
 ---
 
-## Key Philosophy
+# Repository Structure
 
-The objective of this repository is not to showcase tools.
+The repository is organized by **learning milestones**, not by tools.
 
-The objective is to understand the engineering decisions behind those tools:
+Each day introduces one new DevOps concept while building on everything that came before.
 
-* Why use Infrastructure as Code?
-* Why GitOps instead of push-based deployments?
-* Why immutable image tags?
-* Why health probes matter?
-* Why vulnerability scanning is required?
-* Why observability is critical?
+Every folder contains:
 
-Every stage documents not only what was implemented, but also why it was implemented and what trade-offs were considered.
+- Source code
+- Configuration files
+- Documentation
+- Screenshots
+- Troubleshooting notes
+- Engineering decisions
 
----
-
-## Repository Structure
-
-The project is organized by learning milestones rather than tools.
-
-Each day introduces a new DevOps concept and contains the relevant code, configurations, documentation, troubleshooting notes, and engineering decisions for that stage of the journey.
-
-This structure allows readers to follow the project incrementally, understand the reasoning behind each implementation, and observe how a simple application evolves into a production-ready platform.
+This allows readers to understand **not only what was built, but why it was built.**
 
 ---
 
-## Final Outcome
+# Engineering Philosophy
 
-By the end of this project, you'll have built and operated a complete application delivery pipeline:
+This repository is **not** a collection of tool tutorials.
 
-* Application → Container
-* Container → Kubernetes
-* Infrastructure → Terraform
-* Deployment → GitOps
-* Automation → GitHub Actions
+It is an attempt to understand the engineering decisions behind modern DevOps.
 
-More importantly, you'll understand how these pieces fit together to form a modern production platform.
+Throughout this project you'll find discussions around questions like:
+
+- Why Docker before Kubernetes?
+- Why Infrastructure as Code?
+- Why GitOps instead of push-based deployments?
+- Why immutable image tags?
+- Why automate deployments?
+- Why shift security left?
+- Why monitor applications instead of waiting for users to report issues?
+- Why expose services using an Ingress Controller?
+
+Understanding **why** each technology exists is often more valuable than simply knowing **how** to use it.
+
+---
+
+# Final Outcome
+
+By the end of Version 1, you'll have followed the journey of an application through every major stage of a modern DevOps workflow:
+
+```text
+Application
+      │
+      ▼
+Containerization
+      │
+      ▼
+Kubernetes
+      │
+      ▼
+Infrastructure as Code
+      │
+      ▼
+GitOps
+      │
+      ▼
+Continuous Integration
+      │
+      ▼
+Security Scanning
+      │
+      ▼
+Monitoring & Alerting
+      │
+      ▼
+Ingress & External Access
+```
+
+More importantly, you'll understand **how these stages connect together** to form a production-inspired software delivery platform.
+
+---
+
+# Version 2
+
+Version 1 focuses on building a complete DevOps workflow locally using Kind.
+
+Version 2 will expand the project by introducing cloud-native concepts, including:
+
+- Azure Kubernetes Service (AKS)
+- Cloud Infrastructure with Terraform
+- HTTPS using cert-manager & Let's Encrypt
+- Horizontal Pod Autoscaling (HPA)
+- Kubernetes RBAC
+- Advanced monitoring
+- Production-grade GitOps
+- Logging & Distributed Tracing
+- Multi-environment deployments
+
+📄 **Roadmap:** [Version-2.md](Version-2.md)
+
+---
+
+# Medium Article
+
+I also documented **why** I built this project and the lessons I learned throughout the journey.
+
+📖 *[I Knew Docker. I Knew Kubernetes. I Still Didn’t Understand DevOps!](https://medium.com/@janemils/i-knew-docker-i-knew-kubernetes-i-still-didnt-understand-devops-138bc6230bac)*
+
+---
+
+# Contributions
+
+Suggestions, improvements, and feedback are always welcome.
+
+If you find something that could be improved, feel free to:
+
+- Open an Issue.
+- Submit a Pull Request.
+- Connect with me on [LinkedIn](www.linkedin.com/in/nileenajames).
+
+Learning DevOps is a continuous journey, and I'd love to keep learning alongside the community.
+
+---
+
+## ⭐ If you found this project helpful...
+
+Please consider giving the repository a **Star**.
+
+It helps more learners discover the project and motivates me to continue building Version 2.
+
+Thank you for stopping by! 🚀
