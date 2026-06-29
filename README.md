@@ -1,4 +1,4 @@
-# From Code to Production: A Practical DevOps Journey
+# From Code to Production: A Practical DevOps Journey:
 
 *A hands-on project documenting how a simple FastAPI application evolves into a modern DevOps platform through containerization, Kubernetes, Infrastructure as Code, GitOps, CI/CD, security, observability, and networking.*
 
@@ -6,7 +6,7 @@
 
 ---
 
-# Why This Project Exists
+# Why This Project Exists?
 
 When learning DevOps, most tutorials focus on **individual tools**.
 
@@ -33,15 +33,15 @@ The goal is to understand the complete DevOps lifecycle.
 
 ---
 
-# Who This Project Is For
+# Who This Project Is For?
 
 This project is intended for:
 
-- Students learning DevOps
-- Software Test Engineers transitioning into DevOps
-- Platform Engineering beginners
-- Cloud & Kubernetes enthusiasts
-- Anyone who understands individual tools but struggles to connect them into one complete workflow
+- Students learning DevOps.
+- Software Test Engineers transitioning into DevOps.
+- Platform Engineering beginners.
+- Cloud & Kubernetes enthusiasts.
+- Anyone who understands individual tools but struggles to connect them into one complete workflow.
 
 If you've ever finished a Kubernetes tutorial and wondered,
 
@@ -51,7 +51,7 @@ this project is for you.
 
 ---
 
-# What You'll Learn
+# What You'll Learn:
 
 ## Application Development
 
@@ -113,7 +113,7 @@ this project is for you.
 
 ---
 
-# Project Evolution
+# Project Evolution:
 
 | Day | Topic |
 |------|-------|
@@ -129,7 +129,7 @@ this project is for you.
 
 ---
 
-# Current Architecture
+# Current Architecture:
 
 ```text
                     Developer
@@ -168,7 +168,7 @@ NGINX Ingress Controller
 
 ---
 
-# Repository Structure
+# Repository Structure:
 
 The repository is organized by **learning milestones**, not by tools.
 
@@ -187,7 +187,7 @@ This allows readers to understand **not only what was built, but why it was buil
 
 ---
 
-# Engineering Philosophy
+# Engineering Philosophy:
 
 This repository is **not** a collection of tool tutorials.
 
@@ -208,7 +208,7 @@ Understanding **why** each technology exists is often more valuable than simply 
 
 ---
 
-# Final Outcome
+# Final Outcome:
 
 By the end of Version 1, you'll have followed the journey of an application through every major stage of a modern DevOps workflow:
 
@@ -244,7 +244,7 @@ More importantly, you'll understand **how these stages connect together** to for
 
 ---
 
-# Version 2
+# Version 2:
 
 Version 1 focuses on building a complete DevOps workflow locally using Kind.
 
@@ -260,11 +260,11 @@ Version 2 will expand the project by introducing cloud-native concepts, includin
 - Logging & Distributed Tracing
 - Multi-environment deployments
 
-📄 **Roadmap:** [Version-2.md](Version-2.md)
+📄 **Roadmap:** [Version-2.md](https://github.com/Janemils/Devops-Project-1/blob/main/roadmap-for-v2.md)
 
 ---
 
-# Medium Article
+# Medium Article:
 
 I also documented **why** I built this project and the lessons I learned throughout the journey.
 
@@ -272,7 +272,7 @@ I also documented **why** I built this project and the lessons I learned through
 
 ---
 
-# Contributions
+# Contributions:
 
 Suggestions, improvements, and feedback are always welcome.
 
