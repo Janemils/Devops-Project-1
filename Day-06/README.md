@@ -14,6 +14,9 @@
 >
 > The implementation lives in `.github/workflows/ci.yaml`, while this README serves as the accompanying technical documentation.
 
+
+**This is the github actions pipeline link: [WORKFLOW LINK](https://github.com/Janemils/Devops-Project-1/actions/workflows/ci.yaml).**
+
 ---
   
 ## Repository Structure
