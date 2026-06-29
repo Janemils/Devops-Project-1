@@ -9,6 +9,7 @@ For example:
 | Application  | Access Method          |
 | ------------ | ---------------------- |
 | FastAPI      | `kubectl port-forward` |
+| ArgoCD       | `kubectl port-forward` |
 | Grafana      | `kubectl port-forward` |
 | Prometheus   | `kubectl port-forward` |
 | Alertmanager | `kubectl port-forward` |
@@ -58,10 +59,12 @@ Browser
    │
    ├────────► FastAPI
    │
+   ├────────► ArgoCD
+   │
    ├────────► Grafana
    │
    ├────────► Prometheus
-   │
+   |
    └────────► Alertmanager
 ```
 
@@ -93,20 +96,19 @@ The controller then decides which Service should receive the request.
                         ▼
           NGINX Ingress Controller
                         │
-      ┌─────────────────┼─────────────────┐
-      │                 │                 │
-      ▼                 ▼                 ▼
- app.local       grafana.local    prometheus.local
-      │                 │                 │
-      ▼                 ▼                 ▼
- FastAPI           Grafana          Prometheus
-
-                        │
-                        ▼
-               alertmanager.local
-                        │
-                        ▼
-                 Alertmanager
+      ┌────────────|───────────────────┼─────────────────┐
+      │            |                   │                 │
+      ▼            ▼                   ▼                 ▼
+ app.local     argocd.local      grafana.local    prometheus.local
+      │            |                   │                 │
+      ▼            ▼                   ▼                 ▼
+   FastAPI       ArgoCD             Grafana          Prometheus
+                                      │
+                                      ▼
+                              alertmanager.local
+                                      │
+                                      ▼
+                                 Alertmanager
 ```
 
 Every request now enters the cluster through one gateway.
@@ -119,6 +121,7 @@ Every request now enters the cluster through one gateway.
 Day-09/
 
 ├── ingress-default-namespace.yaml
+├── ingress-argocd-namespace.yaml
 └── ingress-monitoring-namespace.yaml
 ```
 
@@ -233,8 +236,19 @@ Pods
 ```
 
 ---
+# Part-3: Expose the ArgoCD app.
 
-# Part-3: Expose the Monitoring Stack
+ArgoCD already exist inside the **argocd** namespace. Or you can use the manifest file: [ingress-argocd-namespace.yaml](https://github.com/Janemils/Devops-Project-1/blob/main/Day-09/ingress-argocd-namespace.yaml).
+
+Hosts:
+
+```
+argocd.local
+```
+
+---
+
+# Part-4: Expose the Monitoring Stack
 
 Grafana, Prometheus and Alertmanager already exist inside the **monitoring** namespace. Or you can use the manifest file: [ingress-monitoring-namespace.yaml](https://github.com/Janemils/Devops-Project-1/blob/main/Day-09/ingress-monitoring-namespace.yaml).
 
@@ -264,14 +278,21 @@ For this reason:
 
 ```
 default
-└── app-ingress.yaml
+└── ingress-default-namespace.yaml
 ```
 
 and
 
 ```
 monitoring
-└── monitoring-ingress.yaml
+└── ingress-monitoring-namespace.yaml
+```
+
+and
+
+```
+argocd
+└── ingress-argocd-namespace.yaml
 ```
 
 were created separately.
@@ -308,6 +329,7 @@ Add this in the bottom of the file:
 
 ```text
 127.0.0.1 app.local
+127.0.0.1 argocd.local
 127.0.0.1 grafana.local
 127.0.0.1 prometheus.local
 127.0.0.1 alertmanager.local
@@ -317,6 +339,8 @@ Now the applications become accessible through:
 
 ```
 http://app.local:8080
+
+http://argocd.local:8080
 
 http://grafana.local:8080
 
@@ -369,6 +393,22 @@ http://app.local:8080/hello
 ```
   
 <img width="1852" height="228" alt="image" src="https://github.com/user-attachments/assets/a886db69-4c69-4aca-a026-b5ee99a7b515" />
+    
+Verify argocd routing:
+
+```bash
+controlplane Devops-Project-1/Day-09 on  main ➜ curl -H "Host: argocd.local" http://localhost:8080
+<!doctype html><html lang="en"><head><meta charset="UTF-8"><title>Argo CD</title><base href="/"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/png" href="assets/favicon/favicon-32x32.png" sizes="32x32"/><link rel="icon" type="image/png" href="assets/favicon/favicon-16x16.png" sizes="16x16"/><link href="assets/fonts.css" rel="stylesheet"><script defer="defer" src="main.dacc55dcbd944c5e45d8.js"></script></head><body><noscript><p>Your browser does not support JavaScript. Please enable JavaScript to view the site. Alternatively, Argo CD can be used with the <a href="https://argoproj.github.io/argo-cd/cli_installation/">Argo CD CLI</a>.</p></noscript><div id="app"></div></body><script defer="defer" src="extensions.js"></script></html>
+
+```
+
+Open this in the browser:
+
+```text
+http://argocd.local:8080
+```
+  
+<img width="1850" height="1010" alt="Screenshot from 2026-06-29 14-42-32" src="https://github.com/user-attachments/assets/bbf915d7-234b-4f38-a782-0937e8f93cf8" />
   
   
 Verify Grafana:
